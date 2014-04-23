@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">bistamp chart 3</string>
+
+    <string-array name="drawer_array">
+        <item>Transactions</item>
+        <item>Order Book</item>
+        <item>Hello There</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    
+</resources>
