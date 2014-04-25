@@ -54,7 +54,7 @@ public class TransactionActivity extends MainActivity{
 		intent.setData(Uri.parse(CHOICE));
 		PendingIntent pendingIntent = PendingIntent.getService(TransactionActivity.this, REQUEST_CODE, intent, 0);
         alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        alarmMgr.cancel(pendingIntent);
+        alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME, 0, 2500, pendingIntent);
         
         receiver = new BroadcastReceiver() {
 	        @Override

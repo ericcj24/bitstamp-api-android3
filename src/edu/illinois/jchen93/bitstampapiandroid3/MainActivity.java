@@ -34,8 +34,6 @@ public class MainActivity extends Activity {
     private CharSequence mTitle;
     private String[] mMenuTitles;
 	
-	static Intent intent;
-	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +89,9 @@ public class MainActivity extends Activity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             selectItem(position);
+            
+            Intent intent = new Intent(MainActivity.this, TransactionActivity.class);
+            startActivity(intent);
         }
     }
 
