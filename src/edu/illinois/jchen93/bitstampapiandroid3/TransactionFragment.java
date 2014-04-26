@@ -16,6 +16,7 @@ import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 
 import android.app.AlarmManager;
+import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,35 +26,45 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.net.Uri;
 import android.os.Bundle;
+
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 
-public class TransactionActivity extends MainActivity{
+public class TransactionFragment extends Fragment{
 	
-	private final static String TAG="TransactionActivity";
+	private final static String TAG="TransactionFragment";
 	private AlarmManager alarmMgr;
 	private BroadcastReceiver receiver;
 	private int REQUEST_CODE = 101;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-	}
+	public TransactionFragment() {
+        // Empty constructor required for fragment subclasses
+    }
 	
 	@Override
-	protected void onStart(){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+		Log.i(TAG, "on createView");
+        return inflater.inflate(R.layout.fragment_chart, container, false);
+    }
+	
+	@Override
+	public void onStart(){
 		super.onStart();
 		Log.i(TAG, "on start");
 
-		LocalBroadcastManager.getInstance(this).registerReceiver((receiver), new IntentFilter(TransactionUpdateService.TRANSACTION_RESULT));		
+		LocalBroadcastManager.getInstance(getActivity()).registerReceiver((receiver), new IntentFilter(TransactionUpdateService.TRANSACTION_RESULT));		
 		
 		String CHOICE = "0";
-		Intent intent = new Intent(TransactionActivity.this, TransactionUpdateService.class);
+		Intent intent = new Intent(getActivity(), TransactionUpdateService.class);
 		intent.setData(Uri.parse(CHOICE));
-		PendingIntent pendingIntent = PendingIntent.getService(TransactionActivity.this, REQUEST_CODE, intent, 0);
-        alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+		PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
+        alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
         alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME, 0, 2500, pendingIntent);
         
         receiver = new BroadcastReceiver() {
@@ -73,25 +84,25 @@ public class TransactionActivity extends MainActivity{
 	
 	
 	@Override
-    protected void onStop() {
+	public void onStop() {
     	super.onStop();
         
-    	LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+    	LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
     	
         if (alarmMgr != null)
         {Log.i(TAG, "on stop");
         String CHOICE = "0";
-        intent = new Intent(TransactionActivity.this, TransactionUpdateService.class);
+        Intent intent = new Intent(getActivity(), TransactionUpdateService.class);
         intent.setData(Uri.parse(CHOICE));
         //pendingIntent.cancel();
-        PendingIntent pendingIntent = PendingIntent.getService(TransactionActivity.this, REQUEST_CODE, intent, 0);
-        alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
+        alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
         alarmMgr.cancel(pendingIntent);}
     }
 	
 	
 	private void plotTransaction(ArrayList<Transaction> transactionArray){
-		XYPlot plot1 = (XYPlot) findViewById(R.id.chart);
+		XYPlot plot1 = (XYPlot) getView().findViewById(R.id.chart);
 		plot1.clear();
 		
 		int n = transactionArray.size();

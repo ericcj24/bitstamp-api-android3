@@ -30,7 +30,7 @@ public class OrderBookDatabaseHelper extends SQLiteOpenHelper{
 			+ KEY_AMOUNT + " STRING);";
   
 	private static final int DATABASE_VERSION = 1;
-	private static final String DATABASE_NAME = "OrderBook2.db";
+	private static final String DATABASE_NAME = "OrderBook3.db";
 	
 	public OrderBookDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

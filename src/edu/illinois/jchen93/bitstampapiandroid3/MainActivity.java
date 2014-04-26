@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -23,7 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 	private final static String TAG="mainActivity";
 	
 	private DrawerLayout mDrawerLayout;
@@ -39,6 +41,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		Log.i(TAG, "onCreate");
 		
 		mTitle = mDrawerTitle = getTitle();
         mMenuTitles = getResources().getStringArray(R.array.drawer_array);
@@ -89,14 +92,13 @@ public class MainActivity extends Activity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             selectItem(position);
-            
-            Intent intent = new Intent(MainActivity.this, TransactionActivity.class);
-            startActivity(intent);
+
         }
     }
 
     private void selectItem(int position) {
-        // update the main content by replacing fragments
+        /**
+    	// update the main content by replacing fragments
         Fragment fragment = new ChartFragment();
         Bundle args = new Bundle();
         args.putInt(ChartFragment.ARG_CHART_NUMBER, position);
@@ -104,6 +106,17 @@ public class MainActivity extends Activity {
 
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        **/
+    	String chart = getResources().getStringArray(R.array.drawer_array)[position];
+        Log.i(TAG, chart);
+        Fragment fragment = new TransactionFragment();
+        //Bundle args = new Bundle();
+        //args.putInt(TransactionFragment.ARG_POSITION, position);
+        //newFragment.setArguments(args);
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+    	
 
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
@@ -138,8 +151,9 @@ public class MainActivity extends Activity {
 
     /**
      * Fragment that appears in the "content_frame", shows a planet
+     * static
      */
-    public static class ChartFragment extends Fragment {
+    public class ChartFragment extends Fragment {
         public static final String ARG_CHART_NUMBER = "chart_number";
 
         public ChartFragment() {
@@ -153,8 +167,14 @@ public class MainActivity extends Activity {
             int i = getArguments().getInt(ARG_CHART_NUMBER);
             String chart = getResources().getStringArray(R.array.drawer_array)[i];
             
-            //Intent intent = new Intent(rootView.getContext(), TransactionActivity.class);
-            //startActivity(intent);
+
+
+            // Replace whatever is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack so the user can navigate back
+            //transaction.replace(R.id.content_frame, newFragment);
+            //transaction.addToBackStack(null);
+            
+            
             
             getActivity().setTitle(chart);
             return rootView;

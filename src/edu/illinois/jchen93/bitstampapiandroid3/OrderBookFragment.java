@@ -30,13 +30,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 
 
-public class OrderBookActivity extends MainActivity{
+public class OrderBookFragment extends Fragment{
 	private final static String TAG="OrderBookActivity";
 	
 	private AlarmManager alarmMgr;
@@ -45,7 +46,7 @@ public class OrderBookActivity extends MainActivity{
 
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 	}
@@ -58,9 +59,9 @@ public class OrderBookActivity extends MainActivity{
 		LocalBroadcastManager.getInstance(this).registerReceiver((receiver), new IntentFilter(OrderBookUpdateService.ORDERBOOK_RESULT));
 		
 		String CHOICE = "1";
-		Intent intent = new Intent(OrderBookActivity.this, OrderBookUpdateService.class);
+		Intent intent = new Intent(OrderBookFragment.this, OrderBookUpdateService.class);
 		intent.setData(Uri.parse(CHOICE));
-		PendingIntent pendingIntent = PendingIntent.getService(OrderBookActivity.this, REQUEST_CODE, intent, 0);
+		PendingIntent pendingIntent = PendingIntent.getService(OrderBookFragment.this, REQUEST_CODE, intent, 0);
 		alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 	    alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME, 0, 7000, pendingIntent);
 	    
@@ -89,10 +90,10 @@ public class OrderBookActivity extends MainActivity{
         if (alarmMgr != null)
         {Log.i(TAG, "on stop");
         String CHOICE = "1";
-        Intent intent = new Intent(OrderBookActivity.this, TransactionUpdateService.class);
+        Intent intent = new Intent(OrderBookFragment.this, TransactionUpdateService.class);
         intent.setData(Uri.parse(CHOICE));
         //pendingIntent.cancel();
-        PendingIntent pendingIntent = PendingIntent.getService(OrderBookActivity.this, REQUEST_CODE, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getService(OrderBookFragment.this, REQUEST_CODE, intent, 0);
         alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmMgr.cancel(pendingIntent);}
     }
