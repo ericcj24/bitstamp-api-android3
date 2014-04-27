@@ -34,6 +34,7 @@ public class TransactionUpdateService extends IntentService{
 	static boolean isFirst = true;
 	
 	private LocalBroadcastManager localBroadcaster = LocalBroadcastManager.getInstance(this);
+	
 	/**
 	   * A constructor is required, and must call the super IntentService(String)
 	   * constructor with a name for the worker thread.
@@ -44,7 +45,7 @@ public class TransactionUpdateService extends IntentService{
 		
 	@Override
     protected void onHandleIntent(Intent workIntent) {
-		
+		Log.i(TAG, this.toString());
 		// Gets data from the incoming Intent
         String dataString = workIntent.getDataString();
         

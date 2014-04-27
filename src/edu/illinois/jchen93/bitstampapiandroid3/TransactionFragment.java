@@ -15,6 +15,8 @@ import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 
+import android.app.LoaderManager;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.PendingIntent;
@@ -22,6 +24,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.Loader;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.net.Uri;
@@ -34,7 +38,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-public class TransactionFragment extends Fragment{
+public class TransactionFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 	
 	private final static String TAG="TransactionFragment";
 	private AlarmManager alarmMgr;
@@ -46,19 +50,31 @@ public class TransactionFragment extends Fragment{
     }
 	
 	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i(TAG, "on create");       
+    }
+	
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 		Log.i(TAG, "on createView");
+		
         return inflater.inflate(R.layout.fragment_chart, container, false);
     }
 	
 	@Override
-	public void onStart(){
-		super.onStart();
-		Log.i(TAG, "on start");
-
-		LocalBroadcastManager.getInstance(getActivity()).registerReceiver((receiver), new IntentFilter(TransactionUpdateService.TRANSACTION_RESULT));		
+	public void onAttach(Activity activity){
+		super.onAttach(activity);
+		Log.i(TAG, "on attach");
+		LocalBroadcastManager.getInstance(getActivity()).registerReceiver((receiver), new IntentFilter(TransactionUpdateService.TRANSACTION_RESULT));
+	}
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		Log.i(TAG, "on resume");				
 		
 		String CHOICE = "0";
 		Intent intent = new Intent(getActivity(), TransactionUpdateService.class);
@@ -84,13 +100,13 @@ public class TransactionFragment extends Fragment{
 	
 	
 	@Override
-	public void onStop() {
-    	super.onStop();
+	public void onDetach() {
+    	super.onDetach();
         
     	LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
     	
         if (alarmMgr != null)
-        {Log.i(TAG, "on stop");
+        {Log.i(TAG, "on detach");
         String CHOICE = "0";
         Intent intent = new Intent(getActivity(), TransactionUpdateService.class);
         intent.setData(Uri.parse(CHOICE));
@@ -182,6 +198,24 @@ public class TransactionFragment extends Fragment{
         plot1.redraw();
         plot1.setVisibility(1);
         plot1.bringToFront();
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> arg0, Cursor arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
