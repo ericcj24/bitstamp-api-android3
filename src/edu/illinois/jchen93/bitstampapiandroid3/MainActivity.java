@@ -1,7 +1,6 @@
 package edu.illinois.jchen93.bitstampapiandroid3;
 
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.Fragment;
