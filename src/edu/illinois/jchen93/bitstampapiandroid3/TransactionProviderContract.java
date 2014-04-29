@@ -56,24 +56,24 @@ public final class TransactionProviderContract implements BaseColumns {
                 Uri.withAppendedPath(CONTENT_URI, TRANSACTIONURL_TABLE_NAME);
 
         /**
-         * Transaction table tid URL column name
+         * Transaction table tid column name
          */
-        public static final String TRANSACTION_TID_COLUMN = "TidUrl";
+        public static final String TRANSACTION_TID_COLUMN = "Tid";
         
         /**
          * Transaction table date column name
          */
-        public static final String TRANSACTION_DATE_COLUMN = "DateUrl";
+        public static final String TRANSACTION_DATE_COLUMN = "Date";
         
         /**
-         * Transaction table price URL column name
+         * Transaction table price column name
          */
-        public static final String TRANSACTION_PRICE_COLUMN = "PriceUrl";
+        public static final String TRANSACTION_PRICE_COLUMN = "Price";
         
         /**
          * Transaction table amount column name
          */
-        public static final String TRANSACTION_AMOUNT_COLUMN = "AmountUrl";
+        public static final String TRANSACTION_AMOUNT_COLUMN = "Amount";
         
         /**
          * Modification date table name

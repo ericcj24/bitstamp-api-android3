@@ -30,12 +30,12 @@ public class TransactionProvider extends ContentProvider{
     private static final String PRIMARY_KEY_TYPE = "INTEGER PRIMARY KEY";
     private static final String INTEGER_TYPE = "INTEGER";
     
-    // Defines an SQLite statement that builds the Transaction URL table
+    // Defines an SQLite statement that builds the Transaction table
     private static final String CREATE_TRANSACTIONURL_TABLE_SQL = "CREATE TABLE" + " " +
             TransactionProviderContract.TRANSACTIONURL_TABLE_NAME + " " +
             "(" + " " +
             TransactionProviderContract.ROW_ID + " " + PRIMARY_KEY_TYPE + " ," +
-            TransactionProviderContract.TRANSACTION_TID_COLUMN + " " + TEXT_TYPE + " ," +
+            TransactionProviderContract.TRANSACTION_TID_COLUMN + " " + INTEGER_TYPE + " ," +
             TransactionProviderContract.TRANSACTION_DATE_COLUMN + " " + TEXT_TYPE + " ," +
             TransactionProviderContract.TRANSACTION_PRICE_COLUMN + " " + TEXT_TYPE + " ," +
             TransactionProviderContract.TRANSACTION_AMOUNT_COLUMN + " " + TEXT_TYPE +
