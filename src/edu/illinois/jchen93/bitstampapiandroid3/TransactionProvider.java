@@ -16,6 +16,23 @@ public class TransactionProvider extends ContentProvider{
 	
 	private static final String TAG = TransactionProvider.class.getSimpleName();
 	
+	
+	/**
+     *  The MIME type for a content URI that would return multiple rows
+     *  <P>Type: TEXT</P>
+     */
+    public static final String MIME_TYPE_ROWS =
+            "vnd.android.cursor.dir/vnd.com.example.android.threadsample";
+
+    /**
+     * The MIME type for a content URI that would return a single row
+     *  <P>Type: TEXT</P>
+     *
+     */
+    public static final String MIME_TYPE_SINGLE_ROW =
+            "vnd.android.cursor.item/vnd.com.example.android.threadsample";
+	
+	
 	// Indicates that the incoming query is for a transaction URL
     public static final int TRANSACTION_URL_QUERY = 1;
 
@@ -32,7 +49,7 @@ public class TransactionProvider extends ContentProvider{
     
     // Defines an SQLite statement that builds the Transaction table
     private static final String CREATE_TRANSACTIONURL_TABLE_SQL = "CREATE TABLE" + " " +
-            TransactionProviderContract.TRANSACTIONURL_TABLE_NAME + " " +
+            TransactionProviderContract.TRANSACTION_TABLE_NAME + " " +
             "(" + " " +
             TransactionProviderContract.ROW_ID + " " + PRIMARY_KEY_TYPE + " ," +
             TransactionProviderContract.TRANSACTION_TID_COLUMN + " " + INTEGER_TYPE + " ," +
@@ -41,66 +58,10 @@ public class TransactionProvider extends ContentProvider{
             TransactionProviderContract.TRANSACTION_AMOUNT_COLUMN + " " + TEXT_TYPE +
             ")";
 	
-    // Defines an SQLite statement that builds the URL modification date table
-    private static final String CREATE_DATE_TABLE_SQL = "CREATE TABLE" + " " +
-    		TransactionProviderContract.DATE_TABLE_NAME + " " +
-            "(" + " " +
-            TransactionProviderContract.ROW_ID + " " + PRIMARY_KEY_TYPE + " ," +
-            TransactionProviderContract.DATA_DATE_COLUMN + " " + INTEGER_TYPE +
-            ")";
     
     // Defines an helper object for the backing database
     private SQLiteOpenHelper mHelper;
-
-    // Defines a helper object that matches content URIs to table-specific parameters
-    private static final UriMatcher sUriMatcher;
-
-    // Stores the MIME types served by this provider
-    private static final SparseArray<String> sMimeTypes;
     
-    /*
-     * Initializes meta-data used by the content provider:
-     * - UriMatcher that maps content URIs to codes
-     * - MimeType array that returns the custom MIME type of a table
-     */
-    static {
-        
-        // Creates an object that associates content URIs with numeric codes
-        sUriMatcher = new UriMatcher(0);
-
-        /*
-         * Sets up an array that maps content URIs to MIME types, via a mapping between the
-         * URIs and an integer code. These are custom MIME types that apply to tables and rows
-         * in this particular provider.
-         */
-        sMimeTypes = new SparseArray<String>();
-
-        // Adds a URI "match" entry that maps picture URL content URIs to a numeric code
-        sUriMatcher.addURI(
-        		TransactionProviderContract.AUTHORITY,
-        		TransactionProviderContract.TRANSACTIONURL_TABLE_NAME,
-                TRANSACTION_URL_QUERY);
-
-        // Adds a URI "match" entry that maps modification date content URIs to a numeric code
-        sUriMatcher.addURI(
-        		TransactionProviderContract.AUTHORITY,
-        		TransactionProviderContract.DATE_TABLE_NAME,
-        		URL_DATE_QUERY);
-        
-        // Specifies a custom MIME type for the picture URL table
-        sMimeTypes.put(
-                TRANSACTION_URL_QUERY,
-                "vnd.android.cursor.dir/vnd." +
-                TransactionProviderContract.AUTHORITY + "." +
-                TransactionProviderContract.TRANSACTIONURL_TABLE_NAME);
-
-        // Specifies the custom MIME type for a single modification date row
-        sMimeTypes.put(
-                URL_DATE_QUERY,
-                "vnd.android.cursor.item/vnd."+
-                TransactionProviderContract.AUTHORITY + "." +
-                TransactionProviderContract.DATE_TABLE_NAME);
-    }
 	
     // Closes the SQLite database helper class, to avoid memory leaks
     public void close() {
@@ -135,8 +96,7 @@ public class TransactionProvider extends ContentProvider{
         private void dropTables(SQLiteDatabase db) {
 
             // If the table doesn't exist, don't throw an error
-            db.execSQL("DROP TABLE IF EXISTS " + TransactionProviderContract.TRANSACTIONURL_TABLE_NAME);
-            db.execSQL("DROP TABLE IF EXISTS " + TransactionProviderContract.DATE_TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + TransactionProviderContract.TRANSACTION_TABLE_NAME);
         }
 	
         /**
@@ -150,7 +110,6 @@ public class TransactionProvider extends ContentProvider{
         public void onCreate(SQLiteDatabase db) {
             // Creates the tables in the backing database for this provider
             db.execSQL(CREATE_TRANSACTIONURL_TABLE_SQL);
-            db.execSQL(CREATE_DATE_TABLE_SQL);
 
         }
         
@@ -229,41 +188,16 @@ public class TransactionProvider extends ContentProvider{
         String sortOrder) {
 
         SQLiteDatabase db = mHelper.getReadableDatabase();
-        // Decodes the content URI and maps it to a code
-        switch (sUriMatcher.match(uri)) {
 
-            // If the query is for a picture URL
-            case TRANSACTION_URL_QUERY:
-                // Does the query against a read-only version of the database
-                Cursor returnCursor = db.query(
-                    TransactionProviderContract.TRANSACTIONURL_TABLE_NAME,
-                    projection,
-                    null, null, null, null, null);
+        // Does the query against a read-only version of the database
+        Cursor returnCursor = db.query(
+            TransactionProviderContract.TRANSACTION_TABLE_NAME,
+            projection,
+            null, null, null, null, null);
 
-                // Sets the ContentResolver to watch this content URI for data changes
-                returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
-                return returnCursor;
-
-            // If the query is for a modification date URL
-            case URL_DATE_QUERY:
-                returnCursor = db.query(
-                    TransactionProviderContract.DATE_TABLE_NAME,
-                    projection,
-                    selection,
-                    selectionArgs,
-                    null,
-                    null,
-                    sortOrder);
-
-                // No notification Uri is set, because the data doesn't have to be watched.
-                return returnCursor;
-
-            case INVALID_URI:
-
-                throw new IllegalArgumentException("Query -- Invalid URI:" + uri);
-        }
-
-        return null;
+        // Sets the ContentResolver to watch this content URI for data changes
+        returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return returnCursor;
     }
     
     /**
@@ -275,7 +209,8 @@ public class TransactionProvider extends ContentProvider{
     @Override
     public String getType(Uri uri) {
 
-        return sMimeTypes.get(sUriMatcher.match(uri));
+    	return this.getId(uri) < 0 ? MIME_TYPE_ROWS
+    	        : MIME_TYPE_SINGLE_ROW;
     }
     /**
      *
