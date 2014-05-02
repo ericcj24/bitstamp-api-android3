@@ -33,15 +33,6 @@ public class TransactionProvider extends ContentProvider{
             "vnd.android.cursor.item/vnd.com.example.android.threadsample";
 	
 	
-	// Indicates that the incoming query is for a transaction URL
-    public static final int TRANSACTION_URL_QUERY = 1;
-
-    // Indicates that the incoming query is for a URL modification date
-    public static final int URL_DATE_QUERY = 2;
-
-    // Indicates an invalid content URI
-    public static final int INVALID_URI = -1;
-	
     // Constants for building SQLite tables during initialization
     private static final String TEXT_TYPE = "TEXT";
     private static final String PRIMARY_KEY_TYPE = "INTEGER PRIMARY KEY";
@@ -270,65 +261,45 @@ public class TransactionProvider extends ContentProvider{
     @Override
     public int bulkInsert(Uri uri, ContentValues[] insertValuesArray) {
 
-        // Decodes the content URI and choose which insert to use
-        switch (sUriMatcher.match(uri)) {
+        // Gets a writeable database instance if one is not already cached
+        SQLiteDatabase localSQLiteDatabase = mHelper.getWritableDatabase();
 
-            // picture URLs table
-            case TRANSACTION_URL_QUERY:
+        /*
+         * Begins a transaction in "exclusive" mode. No other mutations can occur on the
+         * db until this transaction finishes.
+         */
+        localSQLiteDatabase.beginTransaction();
 
-                // Gets a writeable database instance if one is not already cached
-                SQLiteDatabase localSQLiteDatabase = mHelper.getWritableDatabase();
+        // Deletes all the existing rows in the table
+        localSQLiteDatabase.delete(TransactionProviderContract.TRANSACTION_TABLE_NAME, null, null);
 
-                /*
-                 * Begins a transaction in "exclusive" mode. No other mutations can occur on the
-                 * db until this transaction finishes.
-                 */
-                localSQLiteDatabase.beginTransaction();
+        // Gets the size of the bulk insert
+        int numImages = insertValuesArray.length;
 
-                // Deletes all the existing rows in the table
-                localSQLiteDatabase.delete(TransactionProviderContract.TRANSACTIONURL_TABLE_NAME, null, null);
+        // Inserts each ContentValues entry in the array as a row in the database
+        for (int i = 0; i < numImages; i++) {
 
-                // Gets the size of the bulk insert
-                int numImages = insertValuesArray.length;
-
-                // Inserts each ContentValues entry in the array as a row in the database
-                for (int i = 0; i < numImages; i++) {
-
-                    localSQLiteDatabase.insert(TransactionProviderContract.TRANSACTIONURL_TABLE_NAME,
-                            TransactionProviderContract.TRANSACTION_URL_COLUMN, insertValuesArray[i]);
-                }
-
-                // Reports that the transaction was successful and should not be backed out.
-                localSQLiteDatabase.setTransactionSuccessful();
-
-                // Ends the transaction and closes the current db instances
-                localSQLiteDatabase.endTransaction();
-                localSQLiteDatabase.close();
-
-                /*
-                 * Notifies the current ContentResolver that the data associated with "uri" has
-                 * changed.
-                 */
-
-                getContext().getContentResolver().notifyChange(uri, null);
-
-                // The semantics of bulkInsert is to return the number of rows inserted.
-                return numImages;
-
-            // modification date table
-            case URL_DATE_QUERY:
-
-                // Do inserts by calling SQLiteDatabase.insert on each row in insertValuesArray
-                return super.bulkInsert(uri, insertValuesArray);
-
-            case INVALID_URI:
-
-                // An invalid URI was passed. Throw an exception
-                throw new IllegalArgumentException("Bulk insert -- Invalid URI:" + uri);
-
+            localSQLiteDatabase.insert(TransactionProviderContract.TRANSACTION_TABLE_NAME,
+                    TransactionProviderContract.TRANSACTION_URL_COLUMN, insertValuesArray[i]);
         }
 
-        return -1;
+        // Reports that the transaction was successful and should not be backed out.
+        localSQLiteDatabase.setTransactionSuccessful();
+
+        // Ends the transaction and closes the current db instances
+        localSQLiteDatabase.endTransaction();
+        localSQLiteDatabase.close();
+
+        /*
+         * Notifies the current ContentResolver that the data associated with "uri" has
+         * changed.
+         */
+
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        // The semantics of bulkInsert is to return the number of rows inserted.
+        return numImages;
+
 
     }
     
@@ -367,37 +338,25 @@ public class TransactionProvider extends ContentProvider{
     public int update(Uri uri, ContentValues values, String selection,
             String[] selectionArgs) {
 
-        // Decodes the content URI and choose which insert to use
-        switch (sUriMatcher.match(uri)) {
+        // Creats a new writeable database or retrieves a cached one
+        SQLiteDatabase localSQLiteDatabase = mHelper.getWritableDatabase();
 
-            // A picture URL content URI
-            case URL_DATE_QUERY:
+        // Updates the table
+        int rows = localSQLiteDatabase.update(
+                TransactionProviderContract.TRANSACTION_TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
 
-                // Creats a new writeable database or retrieves a cached one
-                SQLiteDatabase localSQLiteDatabase = mHelper.getWritableDatabase();
+        // If the update succeeded, notify a change and return the number of updated rows.
+        if (0 != rows) {
+            getContext().getContentResolver().notifyChange(uri, null);
+            return rows;
+        } else {
 
-                // Updates the table
-                int rows = localSQLiteDatabase.update(
-                        TransactionProviderContract.DATE_TABLE_NAME,
-                        values,
-                        selection,
-                        selectionArgs);
-
-                // If the update succeeded, notify a change and return the number of updated rows.
-                if (0 != rows) {
-                    getContext().getContentResolver().notifyChange(uri, null);
-                    return rows;
-                } else {
-
-                    throw new SQLiteException("Update error:" + uri);
-                }
-
-            case TRANSACTION_URL_QUERY:
-
-                throw new IllegalArgumentException("Update: Invalid URI: " + uri);
+            throw new SQLiteException("Update error:" + uri);
         }
 
-        return -1;
     }
 
     
