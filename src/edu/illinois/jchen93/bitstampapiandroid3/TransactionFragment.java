@@ -44,14 +44,16 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
 	
 	private final static String TAG="TransactionFragment";
 	private AlarmManager alarmMgr;
-	private BroadcastReceiver receiver;
+
 	private int REQUEST_CODE = 101;
 	// Identifies a particular Loader being used in this component
-    private static final int URL_LOADER = 0;
+    private static final int TRANSACTION_LOADER = 0;
     XYPlot plot1 = (XYPlot) getView().findViewById(R.id.chart);
+    
     // An adapter between a Cursor and the Fragment's View
-    private SimpleCursorAdapter mAdapter = 
-    		new SimpleCursorAdapter(context, plot1, Cursor c, String[] from, int[] to);
+    String[] projection = {TransactionProviderContract.TRANSACTION_DATE_COLUMN,
+    					TransactionProviderContract.TRANSACTION_PRICE_COLUMN};
+    
 	
 	public TransactionFragment() {
         // Empty constructor required for fragment subclasses
@@ -73,7 +75,7 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
          * Initializes the CursorLoader. The URL_LOADER value is eventually passed
          * to onCreateLoader().
          */
-		getLoaderManager().initLoader(URL_LOADER, null, this);
+		getLoaderManager().initLoader(TRANSACTION_LOADER, null, this);
 		
         return inflater.inflate(R.layout.fragment_chart, container, false);
     }
@@ -82,7 +84,6 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
 	public void onAttach(Activity activity){
 		super.onAttach(activity);
 		Log.i(TAG, "on attach");
-		LocalBroadcastManager.getInstance(getActivity()).registerReceiver((receiver), new IntentFilter(TransactionUpdateService.TRANSACTION_RESULT));
 	}
 	
 	@Override
@@ -96,18 +97,13 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
 		PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
         alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
         alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME, 0, 2500, pendingIntent);
-        
-        
-        ArrayList<Transaction> s = getTransaction();            
-        plotTransaction(s);		
+        	
 	}
 	
 	
 	@Override
 	public void onDetach() {
     	super.onDetach();
-        
-    	LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
     	
         if (alarmMgr != null)
         {Log.i(TAG, "on detach");
@@ -120,46 +116,24 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
         alarmMgr.cancel(pendingIntent);}
     }
 	
-	private void getTransaction(){
-		String[] mFromColumns = {
-			    DataProviderContract.IMAGE_PICTURENAME_COLUMN
-			};
-		int[] mToFields = {
-			    R.id.PictureName
-			};
-		// Gets a handle to a List View
-		ListView mListView = (ListView) findViewById(R.id.dataList);
-		/*
-		 * Defines a SimpleCursorAdapter for the ListView
-		 *
-		 */
-		SimpleCursorAdapter mAdapter =
-		    new SimpleCursorAdapter(
-		            this,                // Current context
-		            R.layout.list_item,  // Layout for a single row
-		            null,                // No Cursor yet
-		            mFromColumns,        // Cursor columns to use
-		            mToFields,           // Layout fields to use
-		            0                    // No flags
-		    );
-		// Sets the adapter for the view
-		mListView.setAdapter(mAdapter);			
-	}
 	
-	private void plotTransaction(ArrayList<Transaction> transactionArray){
+	private void plotTransaction(Cursor cursor){
 		
 		plot1.clear();
 		
-		int n = transactionArray.size();
+		int n = cursor.getCount();
 		Log.i(TAG, "ploting transaction size is: "+n);
 		Number[] time = new Number[n];
 		Number[] y = new Number[n];
 		int i = 0;
-		for(Transaction temp : transactionArray){
-			time[i] = Long.parseLong(temp.getDate());
-			y[i] = Double.parseDouble(temp.getPrice());
+		cursor.moveToFirst();	
+		while (cursor.isAfterLast() == false){
+			time[i] = Long.parseLong(cursor.getString(cursor.getColumnIndex(TransactionProviderContract.TRANSACTION_DATE_COLUMN)));
+			y[i] = Double.parseDouble(cursor.getString(cursor.getColumnIndex(TransactionProviderContract.TRANSACTION_PRICE_COLUMN)));
 			i++;
+			cursor.moveToNext();
 		}
+		
 
 		XYSeries series = new SimpleXYSeries(Arrays.asList(time),Arrays.asList(y),"Transactions");
 		
@@ -239,20 +213,21 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
 	     * Takes action based on the ID of the Loader that's being created
 	     */
 	    switch (id) {
-	        case URL_LOADER:
+	        case TRANSACTION_LOADER:
 	            // Returns a new CursorLoader
 	        	String[] projection = {TransactionProviderContract.TRANSACTION_DATE_COLUMN,
 	        						TransactionProviderContract.TRANSACTION_TID_COLUMN,
 	        						TransactionProviderContract.TRANSACTION_PRICE_COLUMN,
 	        						TransactionProviderContract.TRANSACTION_AMOUNT_COLUMN};
+	        	String sortOrder = TransactionProviderContract.TRANSACTION_TID_COLUMN + "DESC" +" LIMIT " + 700;
 	            return new CursorLoader(
 	                        getActivity(),   // Parent activity context
-	                        TransactionProviderContract.TRANSACTIONURL_TABLE_CONTENTURI,// Table to query
-	                        projection,     // Projection to return
+	                        TransactionProviderContract.TRANSACTIONURL_TABLE_CONTENTURI, // Table to query
+	                        projection,      // Projection to return
 	                        null,            // No selection clause
 	                        null,            // No selection arguments
-	                        null             // Default sort order
-	        );
+	                        sortOrder        // Default sort order
+	            			);
 	        default:
 	            // An invalid id was passed in
 	            return null;
@@ -263,17 +238,18 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
 	public void onLoadFinished(Loader<Cursor> loader, Cursor returnCursor) {
 		
 		/*
-         *  Changes the adapter's Cursor to be the results of the load. This forces the View to
-         *  redraw.
-         */
+         * Moves the query results into the adapter, causing the
+         * ListView fronting this adapter to re-display
+         */            
+        plotTransaction(returnCursor);
         
-        mAdapter.changeCursor(returnCursor);
+        //mAdapter.changeCursor(returnCursor);
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		// Sets the Adapter's backing data to null. This prevents memory leaks.
-        mAdapter.changeCursor(null);
+        //mAdapter.changeCursor(null);
 	}
 	
 }
