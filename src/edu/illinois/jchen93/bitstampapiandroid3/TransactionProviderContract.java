@@ -19,6 +19,22 @@ public final class TransactionProviderContract implements BaseColumns {
         // The provider's authority
         public static final String AUTHORITY = "edu.illinois.jchen93.bitstampapiandroid3";
 
+    	/**
+         *  The MIME type for a content URI that would return multiple rows
+         *  <P>Type: TEXT</P>
+         */
+        public static final String MIME_TYPE_ROWS =
+                "vnd.android.cursor.dir/vnd.edu.illinois.jchen93.bitstampapiandroid3";
+
+        /**
+         * The MIME type for a content URI that would return a single row
+         *  <P>Type: TEXT</P>
+         *
+         */
+        public static final String MIME_TYPE_SINGLE_ROW =
+                "vnd.android.cursor.item/vnd.edu.illinois.jchen93.bitstampapiandroid3";
+        
+        
         /**
          * The DataProvider content URI
          */

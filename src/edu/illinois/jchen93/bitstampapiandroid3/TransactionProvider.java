@@ -17,20 +17,11 @@ public class TransactionProvider extends ContentProvider{
 	private static final String TAG = TransactionProvider.class.getSimpleName();
 	
 	
-	/**
-     *  The MIME type for a content URI that would return multiple rows
-     *  <P>Type: TEXT</P>
-     */
-    public static final String MIME_TYPE_ROWS =
-            "vnd.android.cursor.dir/vnd.com.example.android.threadsample";
+	// Indicates that the incoming query is for a picture URL
+    public static final int TRANSACTION_URL_QUERY = 1;
 
-    /**
-     * The MIME type for a content URI that would return a single row
-     *  <P>Type: TEXT</P>
-     *
-     */
-    public static final String MIME_TYPE_SINGLE_ROW =
-            "vnd.android.cursor.item/vnd.com.example.android.threadsample";
+    // Indicates an invalid content URI
+    public static final int INVALID_URI = -1;
 	
 	
     // Constants for building SQLite tables during initialization
@@ -53,7 +44,46 @@ public class TransactionProvider extends ContentProvider{
     // Defines an helper object for the backing database
     private SQLiteOpenHelper mHelper;
     
-	
+ // Defines a helper object that matches content URIs to table-specific parameters
+    private static final UriMatcher sUriMatcher;
+
+    // Stores the MIME types served by this provider
+    private static final SparseArray<String> sMimeTypes;
+
+    /*
+     * Initializes meta-data used by the content provider:
+     * - UriMatcher that maps content URIs to codes
+     * - MimeType array that returns the custom MIME type of a table
+     */
+    static {
+        
+        // Creates an object that associates content URIs with numeric codes
+        sUriMatcher = new UriMatcher(0);
+
+        /*
+         * Sets up an array that maps content URIs to MIME types, via a mapping between the
+         * URIs and an integer code. These are custom MIME types that apply to tables and rows
+         * in this particular provider.
+         */
+        sMimeTypes = new SparseArray<String>();
+
+        // Adds a URI "match" entry that maps picture URL content URIs to a numeric code
+        sUriMatcher.addURI(
+                TransactionProviderContract.AUTHORITY,
+                TransactionProviderContract.TRANSACTION_TABLE_NAME,
+                TRANSACTION_URL_QUERY);
+        
+        // Specifies a custom MIME type for the picture URL table
+        sMimeTypes.put(
+                TRANSACTION_URL_QUERY,
+                "vnd.android.cursor.dir/vnd." +
+                TransactionProviderContract.AUTHORITY + "." +
+                TransactionProviderContract.TRANSACTION_TABLE_NAME);
+
+    }
+    
+    
+    
     // Closes the SQLite database helper class, to avoid memory leaks
     public void close() {
         mHelper.close();
@@ -184,7 +214,8 @@ public class TransactionProvider extends ContentProvider{
         Cursor returnCursor = db.query(
             TransactionProviderContract.TRANSACTION_TABLE_NAME,
             projection,
-            null, null, null, null, null);
+            selection, 
+            selectionArgs, null, null, sortOrder);
 
         // Sets the ContentResolver to watch this content URI for data changes
         returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -200,8 +231,7 @@ public class TransactionProvider extends ContentProvider{
     @Override
     public String getType(Uri uri) {
 
-    	return this.getId(uri) < 0 ? MIME_TYPE_ROWS
-    	        : MIME_TYPE_SINGLE_ROW;
+    	 return sMimeTypes.get(sUriMatcher.match(uri));
     }
     /**
      *
@@ -214,36 +244,25 @@ public class TransactionProvider extends ContentProvider{
     @Override
     public Uri insert(Uri uri, ContentValues values) {
 
-        // Decode the URI to choose which action to take
-        switch (sUriMatcher.match(uri)) {
+        // Creates a writeable database or gets one from cache
+        SQLiteDatabase localSQLiteDatabase = mHelper.getWritableDatabase();
 
-            // For the modification date table
-            case URL_DATE_QUERY:
+        // Inserts the row into the table and returns the new row's _id value
+        long id = localSQLiteDatabase.insert(
+                TransactionProviderContract.TRANSACTION_TABLE_NAME,
+                null,
+                values
+        );
 
-                // Creates a writeable database or gets one from cache
-                SQLiteDatabase localSQLiteDatabase = mHelper.getWritableDatabase();
+        // If the insert succeeded, notify a change and return the new row's content URI.
+        if (-1 != id) {
+            getContext().getContentResolver().notifyChange(uri, null);
+            return Uri.withAppendedPath(uri, Long.toString(id));
+        } else {
 
-                // Inserts the row into the table and returns the new row's _id value
-                long id = localSQLiteDatabase.insert(
-                        TransactionProviderContract.DATE_TABLE_NAME,
-                        TransactionProviderContract.DATA_DATE_COLUMN,
-                        values
-                );
-
-                // If the insert succeeded, notify a change and return the new row's content URI.
-                if (-1 != id) {
-                    getContext().getContentResolver().notifyChange(uri, null);
-                    return Uri.withAppendedPath(uri, Long.toString(id));
-                } else {
-
-                    throw new SQLiteException("Insert error:" + uri);
-                }
-            case TRANSACTION_URL_QUERY:
-
-                throw new IllegalArgumentException("Insert: Invalid URI" + uri);
+            throw new SQLiteException("Insert error:" + uri);
         }
 
-        return null;
     }
     
     /**
@@ -274,13 +293,13 @@ public class TransactionProvider extends ContentProvider{
         localSQLiteDatabase.delete(TransactionProviderContract.TRANSACTION_TABLE_NAME, null, null);
 
         // Gets the size of the bulk insert
-        int numImages = insertValuesArray.length;
+        int numTransactions = insertValuesArray.length;
 
         // Inserts each ContentValues entry in the array as a row in the database
-        for (int i = 0; i < numImages; i++) {
+        for (int i = 0; i < numTransactions; i++) {
 
             localSQLiteDatabase.insert(TransactionProviderContract.TRANSACTION_TABLE_NAME,
-                    TransactionProviderContract.TRANSACTION_URL_COLUMN, insertValuesArray[i]);
+                    null, insertValuesArray[i]);
         }
 
         // Reports that the transaction was successful and should not be backed out.
@@ -298,7 +317,7 @@ public class TransactionProvider extends ContentProvider{
         getContext().getContentResolver().notifyChange(uri, null);
 
         // The semantics of bulkInsert is to return the number of rows inserted.
-        return numImages;
+        return numTransactions;
 
 
     }

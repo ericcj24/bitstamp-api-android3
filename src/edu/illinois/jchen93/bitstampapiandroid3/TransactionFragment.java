@@ -22,6 +22,7 @@ import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
@@ -32,6 +33,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +46,13 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
 	private AlarmManager alarmMgr;
 	private BroadcastReceiver receiver;
 	private int REQUEST_CODE = 101;
-
+	// Identifies a particular Loader being used in this component
+    private static final int URL_LOADER = 0;
+    XYPlot plot1 = (XYPlot) getView().findViewById(R.id.chart);
+    // An adapter between a Cursor and the Fragment's View
+    private SimpleCursorAdapter mAdapter = 
+    		new SimpleCursorAdapter(context, plot1, Cursor c, String[] from, int[] to);
+	
 	public TransactionFragment() {
         // Empty constructor required for fragment subclasses
     }
@@ -60,6 +68,12 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
         Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 		Log.i(TAG, "on createView");
+		
+		/*
+         * Initializes the CursorLoader. The URL_LOADER value is eventually passed
+         * to onCreateLoader().
+         */
+		getLoaderManager().initLoader(URL_LOADER, null, this);
 		
         return inflater.inflate(R.layout.fragment_chart, container, false);
     }
@@ -83,19 +97,9 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
         alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
         alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME, 0, 2500, pendingIntent);
         
-        receiver = new BroadcastReceiver() {
-	        @Override
-	        public void onReceive(Context context, Intent intent) {
-	        	//String intentServiceType = intent.getData().toString();
-	        	//Log.i(TAG, "this is "+intentServiceType);
-        		ArrayList<Transaction> s = intent.getParcelableArrayListExtra(TransactionUpdateService.TRANSACTION_RESULT);            
-        		if (s==null){ Log.i(TAG, "broadcast received null, failed broadcast");}
-        		else{
-        			Log.i(TAG, "transaction broadcast receive correctly, arraylist size is: "+Integer.toString(s.size()));
-        			plotTransaction(s);
-        		}	        	
-	        }
-	    };
+        
+        ArrayList<Transaction> s = getTransaction();            
+        plotTransaction(s);		
 	}
 	
 	
@@ -116,9 +120,34 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
         alarmMgr.cancel(pendingIntent);}
     }
 	
+	private void getTransaction(){
+		String[] mFromColumns = {
+			    DataProviderContract.IMAGE_PICTURENAME_COLUMN
+			};
+		int[] mToFields = {
+			    R.id.PictureName
+			};
+		// Gets a handle to a List View
+		ListView mListView = (ListView) findViewById(R.id.dataList);
+		/*
+		 * Defines a SimpleCursorAdapter for the ListView
+		 *
+		 */
+		SimpleCursorAdapter mAdapter =
+		    new SimpleCursorAdapter(
+		            this,                // Current context
+		            R.layout.list_item,  // Layout for a single row
+		            null,                // No Cursor yet
+		            mFromColumns,        // Cursor columns to use
+		            mToFields,           // Layout fields to use
+		            0                    // No flags
+		    );
+		// Sets the adapter for the view
+		mListView.setAdapter(mAdapter);			
+	}
 	
 	private void plotTransaction(ArrayList<Transaction> transactionArray){
-		XYPlot plot1 = (XYPlot) getView().findViewById(R.id.chart);
+		
 		plot1.clear();
 		
 		int n = transactionArray.size();
@@ -206,34 +235,45 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
         // sample only has one Loader, so we don't care about the ID.
         // First, pick the base URI to use depending on whether we are
         // currently filtering.
-        Uri baseUri;
-        if (mCurFilter != null) {
-            baseUri = Uri.withAppendedPath(Contacts.CONTENT_FILTER_URI,
-                    Uri.encode(mCurFilter));
-        } else {
-            baseUri = Contacts.CONTENT_URI;
-        }
-
-        // Now create and return a CursorLoader that will take care of
-        // creating a Cursor for the data being displayed.
-        String select = "((" + Contacts.DISPLAY_NAME + " NOTNULL) AND ("
-                + Contacts.HAS_PHONE_NUMBER + "=1) AND ("
-                + Contacts.DISPLAY_NAME + " != '' ))";
-        return new CursorLoader(getActivity(), baseUri,
-                CONTACTS_SUMMARY_PROJECTION, select, null,
-                Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
+		/*
+	     * Takes action based on the ID of the Loader that's being created
+	     */
+	    switch (id) {
+	        case URL_LOADER:
+	            // Returns a new CursorLoader
+	        	String[] projection = {TransactionProviderContract.TRANSACTION_DATE_COLUMN,
+	        						TransactionProviderContract.TRANSACTION_TID_COLUMN,
+	        						TransactionProviderContract.TRANSACTION_PRICE_COLUMN,
+	        						TransactionProviderContract.TRANSACTION_AMOUNT_COLUMN};
+	            return new CursorLoader(
+	                        getActivity(),   // Parent activity context
+	                        TransactionProviderContract.TRANSACTIONURL_TABLE_CONTENTURI,// Table to query
+	                        projection,     // Projection to return
+	                        null,            // No selection clause
+	                        null,            // No selection arguments
+	                        null             // Default sort order
+	        );
+	        default:
+	            // An invalid id was passed in
+	            return null;
+	   }
 	}
 
 	@Override
-	public void onLoadFinished(Loader<Cursor> arg0, Cursor arg1) {
-		// TODO Auto-generated method stub
+	public void onLoadFinished(Loader<Cursor> loader, Cursor returnCursor) {
 		
+		/*
+         *  Changes the adapter's Cursor to be the results of the load. This forces the View to
+         *  redraw.
+         */
+        
+        mAdapter.changeCursor(returnCursor);
 	}
 
 	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
-		// TODO Auto-generated method stub
-		
+	public void onLoaderReset(Loader<Cursor> loader) {
+		// Sets the Adapter's backing data to null. This prevents memory leaks.
+        mAdapter.changeCursor(null);
 	}
 	
 }
