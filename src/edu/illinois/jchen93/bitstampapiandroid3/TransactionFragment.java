@@ -48,11 +48,7 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
 	private int REQUEST_CODE = 101;
 	// Identifies a particular Loader being used in this component
     private static final int TRANSACTION_LOADER = 0;
-    XYPlot plot1 = (XYPlot) getView().findViewById(R.id.chart);
     
-    // An adapter between a Cursor and the Fragment's View
-    String[] projection = {TransactionProviderContract.TRANSACTION_DATE_COLUMN,
-    					TransactionProviderContract.TRANSACTION_PRICE_COLUMN};
     
 	
 	public TransactionFragment() {
@@ -118,7 +114,7 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
 	
 	
 	private void plotTransaction(Cursor cursor){
-		
+		XYPlot plot1 = (XYPlot) getView().findViewById(R.id.chart);
 		plot1.clear();
 		
 		int n = cursor.getCount();
@@ -219,7 +215,7 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
 	        						TransactionProviderContract.TRANSACTION_TID_COLUMN,
 	        						TransactionProviderContract.TRANSACTION_PRICE_COLUMN,
 	        						TransactionProviderContract.TRANSACTION_AMOUNT_COLUMN};
-	        	String sortOrder = TransactionProviderContract.TRANSACTION_TID_COLUMN + "DESC" +" LIMIT " + 700;
+	        	String sortOrder = TransactionProviderContract.TRANSACTION_TID_COLUMN + " DESC" +" LIMIT " + 700;
 	            return new CursorLoader(
 	                        getActivity(),   // Parent activity context
 	                        TransactionProviderContract.TRANSACTIONURL_TABLE_CONTENTURI, // Table to query

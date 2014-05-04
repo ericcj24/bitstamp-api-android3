@@ -119,6 +119,7 @@ public class TransactionUpdateService extends IntentService{
 				}
 			}
 			cursor.close();
+			databaseDate = newDate;
 		}
 		Log.i(TAG, "count size is: " + count);
 		return count;
