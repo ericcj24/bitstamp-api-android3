@@ -96,13 +96,11 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
         	
 	}
 	
-	
 	@Override
-	public void onDetach() {
-    	super.onDetach();
-    	
-        if (alarmMgr != null)
-        {Log.i(TAG, "on detach");
+	public void onPause(){
+		super.onPause();
+		if (alarmMgr != null)
+        {Log.i(TAG, "on pause");
         String CHOICE = "0";
         Intent intent = new Intent(getActivity(), TransactionUpdateService.class);
         intent.setData(Uri.parse(CHOICE));
@@ -110,6 +108,12 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
         PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
         alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
         alarmMgr.cancel(pendingIntent);}
+	}
+	
+	@Override
+	public void onDetach() {
+    	super.onDetach();
+    	
     }
 	
 	
@@ -118,7 +122,7 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
 		plot1.clear();
 		
 		int n = cursor.getCount();
-		Log.i(TAG, "ploting transaction size is: "+n);
+		//Log.i(TAG, "ploting transaction size is: "+n);
 		Number[] time = new Number[n];
 		Number[] y = new Number[n];
 		int i = 0;
