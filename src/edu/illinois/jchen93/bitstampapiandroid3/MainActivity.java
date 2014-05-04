@@ -102,7 +102,7 @@ public class MainActivity extends FragmentActivity {
         **/
     	String chart = getResources().getStringArray(R.array.drawer_array)[position];
         Log.i(TAG, chart);
-        if(chart == "Transactions"){
+        if(position == 0){
 		    Fragment fragment = new TransactionFragment();
 		    //Bundle args = new Bundle();
 		    //args.putInt(TransactionFragment.ARG_POSITION, position);
@@ -110,8 +110,8 @@ public class MainActivity extends FragmentActivity {
 		    FragmentManager fragmentManager = getFragmentManager();
 		    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         }
-        else if(chart == "Order Book"){
-        	Fragment fragment = new OrderBookFragment();
+        else if(position == 1){
+        	Fragment fragment = new TestFragment();
 		    //Bundle args = new Bundle();
 		    //args.putInt(TransactionFragment.ARG_POSITION, position);
 		    //newFragment.setArguments(args);
