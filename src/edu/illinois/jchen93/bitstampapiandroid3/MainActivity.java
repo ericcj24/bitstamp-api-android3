@@ -107,13 +107,22 @@ public class MainActivity extends FragmentActivity {
         **/
     	String chart = getResources().getStringArray(R.array.drawer_array)[position];
         Log.i(TAG, chart);
-        Fragment fragment = new TransactionFragment();
-        //Bundle args = new Bundle();
-        //args.putInt(TransactionFragment.ARG_POSITION, position);
-        //newFragment.setArguments(args);
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
+        if(chart == "transactions"){
+		    Fragment fragment = new TransactionFragment();
+		    //Bundle args = new Bundle();
+		    //args.putInt(TransactionFragment.ARG_POSITION, position);
+		    //newFragment.setArguments(args);
+		    FragmentManager fragmentManager = getFragmentManager();
+		    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        }
+        else if(chart == "Order Book"){
+        	Fragment fragment = new OrderBookFragment();
+		    //Bundle args = new Bundle();
+		    //args.putInt(TransactionFragment.ARG_POSITION, position);
+		    //newFragment.setArguments(args);
+		    FragmentManager fragmentManager = getFragmentManager();
+		    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        }
     	
 
         // update selected item and title, then close the drawer

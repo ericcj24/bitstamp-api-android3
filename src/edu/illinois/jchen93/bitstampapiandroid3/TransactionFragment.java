@@ -113,7 +113,7 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
 	@Override
 	public void onDetach() {
     	super.onDetach();
-    	
+    	Log.i(TAG, "on detach");
     }
 	
 	
