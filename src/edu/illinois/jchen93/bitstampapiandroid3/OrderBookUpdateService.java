@@ -69,17 +69,11 @@ public class OrderBookUpdateService extends IntentService{
         		     */
         			// in the last postion of arraylist, contains a pair of string descripe the size of asks, bids
         			//ArrayList<Price_Amount> newOrderBookList = fetchOrderBookFromDatabase();
-        			ArrayList<Price_Amount> newOrderBookList = fetchOrderBookTemp();
+        			/**ArrayList<Price_Amount> newOrderBookList = fetchOrderBookTemp();
         			Log.i(TAG, "fetched size from internet "+Integer.toString(newOrderBookList.size()));
         			if(newOrderBookList.size() > 0)
-        		    {
-        				Intent localIntent =
-        		            new Intent(ORDERBOOK_RESULT)
-        		            // Puts the status into the Intent
-        		            .putParcelableArrayListExtra(ORDERBOOK_RESULT, newOrderBookList);
-        		    // Broadcasts the Intent to receivers in main UI thread.
-        		    localBroadcaster.sendBroadcast(localIntent);
-        		    }
+        		    
+        		    }*/
         		//}
         		break;
         	default:
@@ -173,12 +167,10 @@ public class OrderBookUpdateService extends IntentService{
         
 		return count;
 	}
-	
+	/**
 	private int addNewOrderBook(OrderBook orderBook){
 		int count = 0;
 		
-		OrderBookProvider tDbHelper = OrderBookProvider.getInstance(this);
-		SQLiteDatabase db = tDbHelper.getWritableDatabase();
 		
 		
 		// cursor check the newest entry so far prior to update		
@@ -303,7 +295,7 @@ public class OrderBookUpdateService extends IntentService{
 			cursor.close();
 		}
 		return rt;
-	}
+	}*/
 	
 	
 }

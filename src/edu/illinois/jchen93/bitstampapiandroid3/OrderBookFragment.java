@@ -88,7 +88,7 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 		super.onResume();
 		Log.i(TAG, "on resume");				
 		
-		String CHOICE = "0";
+		String CHOICE = "1";
 		Intent intent = new Intent(getActivity(), OrderBookUpdateService.class);
 		intent.setData(Uri.parse(CHOICE));
 		PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
@@ -102,7 +102,7 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 		super.onPause();
 		if (alarmMgr != null)
         {Log.i(TAG, "on pause");
-        String CHOICE = "0";
+        String CHOICE = "1";
         Intent intent = new Intent(getActivity(), OrderBookUpdateService.class);
         intent.setData(Uri.parse(CHOICE));
         //pendingIntent.cancel();
@@ -172,23 +172,25 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 		XYPlot plot1 = (XYPlot) getView().findViewById(R.id.orderbookchart);
 		plot1.clear();
 		
-		int size = ob.size();
-		int nask = Integer.parseInt(ob.get(size-1).getPrice());
-		int nbid = Integer.parseInt(ob.get(size-1).getAmount());
+		int size = cursor.getCount();
+		
+		//int nask = Integer.parseInt(ob.get(size-1).getPrice());
+		//int nbid = Integer.parseInt(ob.get(size-1).getAmount());
+		int nask = 100;
+		int nbid = 100;
 		Number[] x1 = new Number[nask];
 		Number[] y1 = new Number[nask];
 		int i=0;
 		for(i=0; i<nask; i++){
-			x1[i] = Double.parseDouble(ob.get(i).getPrice());
-			y1[i] = Double.parseDouble(ob.get(i).getAmount());
+			x1[i] = i;
+			y1[i] = 10;
 		}
-		Log.i(TAG, "nask is "+nask +"and i is "+i);
-		i--;
+
 		Number[] x2 = new Number[nbid];
 		Number[] y2 = new Number[nbid];
 		for(int j=0; j<nbid; j++){
-			x2[j] = Double.parseDouble(ob.get(i+j).getPrice());
-			y2[j] = Double.parseDouble(ob.get(i+j).getAmount());
+			x2[j] = j;
+			y2[j] = 20;
 		}
 		XYSeries series1 = new SimpleXYSeries(Arrays.asList(x1),Arrays.asList(y1),"Asks");
 		XYSeries series2 = new SimpleXYSeries(Arrays.asList(x2),Arrays.asList(y2),"Bids");

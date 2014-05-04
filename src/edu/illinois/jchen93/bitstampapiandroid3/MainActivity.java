@@ -102,7 +102,7 @@ public class MainActivity extends FragmentActivity {
         **/
     	String chart = getResources().getStringArray(R.array.drawer_array)[position];
         Log.i(TAG, chart);
-        if(chart == "transactions"){
+        if(chart == "Transactions"){
 		    Fragment fragment = new TransactionFragment();
 		    //Bundle args = new Bundle();
 		    //args.putInt(TransactionFragment.ARG_POSITION, position);
