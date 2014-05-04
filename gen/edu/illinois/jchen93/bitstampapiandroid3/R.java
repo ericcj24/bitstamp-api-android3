@@ -33,12 +33,14 @@ public final class R {
         public static final int content_frame=0x7f090001;
         public static final int drawer_layout=0x7f090000;
         public static final int left_drawer=0x7f090002;
-        public static final int menu_settings=0x7f090004;
+        public static final int menu_settings=0x7f090005;
+        public static final int orderbookchart=0x7f090004;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
         public static final int drawer_list_item=0x7f030001;
         public static final int fragment_chart=0x7f030002;
+        public static final int fragment_orderbook_chart=0x7f030003;
     }
     public static final class menu {
         public static final int main=0x7f080000;

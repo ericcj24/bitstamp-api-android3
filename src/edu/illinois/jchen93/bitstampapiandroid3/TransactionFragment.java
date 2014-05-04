@@ -32,8 +32,6 @@ import android.graphics.DashPathEffect;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +42,6 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
 	
 	private final static String TAG="TransactionFragment";
 	private AlarmManager alarmMgr;
-
 	private int REQUEST_CODE = 101;
 	// Identifies a particular Loader being used in this component
     private static final int TRANSACTION_LOADER = 0;

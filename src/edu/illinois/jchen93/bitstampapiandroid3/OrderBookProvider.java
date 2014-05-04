@@ -12,13 +12,12 @@ import android.net.Uri;
 import android.util.Log;
 import android.util.SparseArray;
 
-public class TransactionProvider extends ContentProvider{
+public class OrderBookProvider extends ContentProvider{
 	
-	private static final String TAG = TransactionProvider.class.getSimpleName();
-	
-	
+	private static final String TAG = OrderBookProvider.class.getSimpleName();
+
 	// Indicates that the incoming query is for a picture URL
-    public static final int TRANSACTION_URL_QUERY = 1;
+    public static final int ORDERBOOK_URL_QUERY = 1;
 
     // Indicates an invalid content URI
     public static final int INVALID_URI = -1;
@@ -29,18 +28,17 @@ public class TransactionProvider extends ContentProvider{
     private static final String PRIMARY_KEY_TYPE = "INTEGER PRIMARY KEY";
     private static final String INTEGER_TYPE = "INTEGER";
     
-    // Defines an SQLite statement that builds the Transaction table
-    private static final String CREATE_TRANSACTIONURL_TABLE_SQL = "CREATE TABLE" + " " +
-            TransactionProviderContract.TRANSACTION_TABLE_NAME + " " +
+    // Defines an SQLite statement that builds the OrderBook table
+    private static final String CREATE_ORDERBOOKURL_TABLE_SQL = "CREATE TABLE" + " " +
+            OrderBookProviderContract.ORDERBOOK_TABLE_NAME + " " +
             "(" + " " +
-            TransactionProviderContract.ROW_ID + " " + PRIMARY_KEY_TYPE + " ," +
-            TransactionProviderContract.TRANSACTION_TID_COLUMN + " " + INTEGER_TYPE + " ," +
-            TransactionProviderContract.TRANSACTION_DATE_COLUMN + " " + INTEGER_TYPE + " ," +
-            TransactionProviderContract.TRANSACTION_PRICE_COLUMN + " " + TEXT_TYPE + " ," +
-            TransactionProviderContract.TRANSACTION_AMOUNT_COLUMN + " " + TEXT_TYPE +
+            OrderBookProviderContract.ROW_ID + " " + PRIMARY_KEY_TYPE + " ," +
+            OrderBookProviderContract.ORDERBOOK_TIMESTAMP_COLUMN + " " + INTEGER_TYPE + " ," +
+            OrderBookProviderContract.ORDERBOOK_KIND_COLUMN + " " + TEXT_TYPE + " ," +
+            OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN + " " + TEXT_TYPE + " ," +
+            OrderBookProviderContract.ORDERBOOK_AMOUNT_COLUMN + " " + TEXT_TYPE +
             ")";
-	
-    
+
     // Defines an helper object for the backing database
     private SQLiteOpenHelper mHelper;
     
@@ -49,7 +47,7 @@ public class TransactionProvider extends ContentProvider{
 
     // Stores the MIME types served by this provider
     private static final SparseArray<String> sMimeTypes;
-
+    
     /*
      * Initializes meta-data used by the content provider:
      * - UriMatcher that maps content URIs to codes
@@ -69,20 +67,17 @@ public class TransactionProvider extends ContentProvider{
 
         // Adds a URI "match" entry that maps picture URL content URIs to a numeric code
         sUriMatcher.addURI(
-                TransactionProviderContract.AUTHORITY,
-                TransactionProviderContract.TRANSACTION_TABLE_NAME,
-                TRANSACTION_URL_QUERY);
+                OrderBookProviderContract.AUTHORITY,
+                OrderBookProviderContract.ORDERBOOK_TABLE_NAME,
+                ORDERBOOK_URL_QUERY);
         
         // Specifies a custom MIME type for the picture URL table
         sMimeTypes.put(
-                TRANSACTION_URL_QUERY,
+                ORDERBOOK_URL_QUERY,
                 "vnd.android.cursor.dir/vnd." +
-                TransactionProviderContract.AUTHORITY + "." +
-                TransactionProviderContract.TRANSACTION_TABLE_NAME);
-
+                OrderBookProviderContract.AUTHORITY + "." +
+                OrderBookProviderContract.ORDERBOOK_TABLE_NAME);
     }
-    
-    
     
     // Closes the SQLite database helper class, to avoid memory leaks
     public void close() {
@@ -90,23 +85,22 @@ public class TransactionProvider extends ContentProvider{
     }
     
     
-    
     /**
      * Defines a helper class that opens the SQLite database for this provider when a request is
      * received. If the database doesn't yet exist, the helper creates it.
      */
-    private class TransactionProviderHelper extends SQLiteOpenHelper {
+    private class OrderBookProviderHelper extends SQLiteOpenHelper {
         
     	/**
          * Instantiates a new SQLite database using the supplied database name and version
          *
          * @param context The current context
          */
-        TransactionProviderHelper(Context context) {
+    	OrderBookProviderHelper(Context context) {
             super(context,
-                    TransactionProviderContract.DATABASE_NAME,
+            		OrderBookProviderContract.DATABASE_NAME,
                     null,
-                    TransactionProviderContract.DATABASE_VERSION);
+                    OrderBookProviderContract.DATABASE_VERSION);
         }
         
         /**
@@ -117,7 +111,7 @@ public class TransactionProvider extends ContentProvider{
         private void dropTables(SQLiteDatabase db) {
 
             // If the table doesn't exist, don't throw an error
-            db.execSQL("DROP TABLE IF EXISTS " + TransactionProviderContract.TRANSACTION_TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + OrderBookProviderContract.ORDERBOOK_TABLE_NAME);
         }
 	
         /**
@@ -130,7 +124,7 @@ public class TransactionProvider extends ContentProvider{
         @Override
         public void onCreate(SQLiteDatabase db) {
             // Creates the tables in the backing database for this provider
-            db.execSQL(CREATE_TRANSACTIONURL_TABLE_SQL);
+            db.execSQL(CREATE_ORDERBOOKURL_TABLE_SQL);
 
         }
         
@@ -144,7 +138,7 @@ public class TransactionProvider extends ContentProvider{
          */
         @Override
         public void onUpgrade(SQLiteDatabase db, int version1, int version2) {
-            Log.w(TransactionProviderHelper.class.getName(),
+            Log.w(OrderBookProviderHelper.class.getName(),
                     "Upgrading database from version " + version1 + " to "
                             + version2 + ", which will destroy all the existing data");
 
@@ -163,7 +157,7 @@ public class TransactionProvider extends ContentProvider{
          */
         @Override
         public void onDowngrade(SQLiteDatabase db, int version1, int version2) {
-            Log.w(TransactionProviderHelper.class.getName(),
+            Log.w(OrderBookProviderHelper.class.getName(),
                 "Downgrading database from version " + version1 + " to "
                         + version2 + ", which will destroy all the existing data");
     
@@ -176,7 +170,6 @@ public class TransactionProvider extends ContentProvider{
         }
     }
 
-        
     /**
      * Initializes the content provider. Notice that this method simply creates a
      * the SQLiteOpenHelper instance and returns. You should do most of the initialization of a
@@ -186,7 +179,7 @@ public class TransactionProvider extends ContentProvider{
     public boolean onCreate() {
 
         // Creates a new database helper object
-        mHelper = new TransactionProviderHelper(getContext());
+        mHelper = new OrderBookProviderHelper(getContext());
 
         return true;
     }
@@ -212,7 +205,7 @@ public class TransactionProvider extends ContentProvider{
 
         // Does the query against a read-only version of the database
         Cursor returnCursor = db.query(
-            TransactionProviderContract.TRANSACTION_TABLE_NAME,
+        	OrderBookProviderContract.ORDERBOOK_TABLE_NAME,
             projection,
             selection, 
             selectionArgs, null, null, sortOrder);
@@ -249,7 +242,7 @@ public class TransactionProvider extends ContentProvider{
 
         // Inserts the row into the table and returns the new row's _id value
         long id = localSQLiteDatabase.insert(
-                TransactionProviderContract.TRANSACTION_TABLE_NAME,
+                OrderBookProviderContract.ORDERBOOK_TABLE_NAME,
                 null,
                 values
         );
@@ -290,15 +283,15 @@ public class TransactionProvider extends ContentProvider{
         localSQLiteDatabase.beginTransaction();
 
         // Deletes all the existing rows in the table
-        localSQLiteDatabase.delete(TransactionProviderContract.TRANSACTION_TABLE_NAME, null, null);
+        localSQLiteDatabase.delete(OrderBookProviderContract.ORDERBOOK_TABLE_NAME, null, null);
 
         // Gets the size of the bulk insert
-        int numTransactions = insertValuesArray.length;
+        int numOrderBook = insertValuesArray.length;
 
         // Inserts each ContentValues entry in the array as a row in the database
-        for (int i = 0; i < numTransactions; i++) {
+        for (int i = 0; i < numOrderBook; i++) {
 
-            localSQLiteDatabase.insert(TransactionProviderContract.TRANSACTION_TABLE_NAME,
+            localSQLiteDatabase.insert(OrderBookProviderContract.ORDERBOOK_TABLE_NAME,
                     null, insertValuesArray[i]);
         }
 
@@ -317,8 +310,9 @@ public class TransactionProvider extends ContentProvider{
         getContext().getContentResolver().notifyChange(uri, null);
 
         // The semantics of bulkInsert is to return the number of rows inserted.
-        return numTransactions;
+        return numOrderBook;
     }
+ 
     
     /**
      * Returns an UnsupportedOperationException if delete is called
@@ -360,7 +354,7 @@ public class TransactionProvider extends ContentProvider{
 
         // Updates the table
         int rows = localSQLiteDatabase.update(
-                TransactionProviderContract.TRANSACTION_TABLE_NAME,
+                OrderBookProviderContract.ORDERBOOK_TABLE_NAME,
                 values,
                 selection,
                 selectionArgs);
@@ -375,6 +369,6 @@ public class TransactionProvider extends ContentProvider{
         }
 
     }
-
+    
     
 }

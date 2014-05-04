@@ -177,7 +177,7 @@ public class OrderBookUpdateService extends IntentService{
 	private int addNewOrderBook(OrderBook orderBook){
 		int count = 0;
 		
-		OrderBookDatabaseHelper tDbHelper = OrderBookDatabaseHelper.getInstance(this);
+		OrderBookProvider tDbHelper = OrderBookProvider.getInstance(this);
 		SQLiteDatabase db = tDbHelper.getWritableDatabase();
 		
 		
@@ -249,7 +249,7 @@ public class OrderBookUpdateService extends IntentService{
 	}
 	
 	private ArrayList<Price_Amount> fetchOrderBookFromDatabase(){
-		OrderBookDatabaseHelper tDbHelper = OrderBookDatabaseHelper.getInstance(this);
+		OrderBookProvider tDbHelper = OrderBookProvider.getInstance(this);
 		SQLiteDatabase db = tDbHelper.getWritableDatabase();
 		
 		

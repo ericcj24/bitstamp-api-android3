@@ -1,7 +1,8 @@
-package edu.illinois.jchen93.bitstampapiandroid3;
-
 import android.net.Uri;
 import android.provider.BaseColumns;
+
+
+
 
 /**
  *
@@ -9,11 +10,11 @@ import android.provider.BaseColumns;
  * contract assists in accessing the provider's available content URIs, column names, MIME types,
  * and so forth, without having to know the actual values.
  */
-public final class TransactionProviderContract implements BaseColumns {
-
-    private TransactionProviderContract() { }
-        
-    // The URI scheme used for content URIs
+public final class OrderBookProviderContract implements BaseColumns {
+	
+	private OrderBookProviderContract() { }
+	
+	// The URI scheme used for content URIs
     public static final String SCHEME = "content";
 
     // The provider's authority
@@ -41,46 +42,47 @@ public final class TransactionProviderContract implements BaseColumns {
     public static final Uri CONTENT_URI = Uri.parse(SCHEME + "://" + AUTHORITY);
     
     /**
-     * Transaction table name
+     * Order Book table name
      */
-    public static final String TRANSACTION_TABLE_NAME = "TransactionData";
+    public static final String ORDERBOOK_TABLE_NAME = "OrderBookData";
 
     /**
-     * Transaction table content URI
+     * Order Book table content URI
      */
-    public static final Uri TRANSACTIONURL_TABLE_CONTENTURI =
-            Uri.withAppendedPath(CONTENT_URI, TRANSACTION_TABLE_NAME);
+    public static final Uri ORDERBOOKURL_TABLE_CONTENTURI =
+            Uri.withAppendedPath(CONTENT_URI, ORDERBOOK_TABLE_NAME);
 
 
     /**
-     * Transaction table primary key column name
+     * Order Book table primary key column name
      */
     public static final String ROW_ID = BaseColumns._ID;
     
     /**
-     * Transaction table tid column name
+     * Order Book table timestamp column name
      */
-    public static final String TRANSACTION_TID_COLUMN = "Tid";
+    public static final String ORDERBOOK_TIMESTAMP_COLUMN = "Timestamp";
     
     /**
-     * Transaction table date column name
+     * Order Book table kind column name
      */
-    public static final String TRANSACTION_DATE_COLUMN = "Date";
+    public static final String ORDERBOOK_KIND_COLUMN = "Kind";
     
     /**
-     * Transaction table price column name
+     * Order Book table price column name
      */
-    public static final String TRANSACTION_PRICE_COLUMN = "Price";
+    public static final String ORDERBOOK_PRICE_COLUMN = "Price";
     
     /**
-     * Transaction table amount column name
+     * Order Book table amount column name
      */
-    public static final String TRANSACTION_AMOUNT_COLUMN = "Amount";
+    public static final String ORDERBOOK_AMOUNT_COLUMN = "Amount";
     
     
     // The content provider database name
-    public static final String DATABASE_NAME = "TransactionDataDB";
+    public static final String DATABASE_NAME = "OrderBookDataDB";
 
     // The starting version of the database
     public static final int DATABASE_VERSION = 1;
+	
 }

@@ -37,6 +37,11 @@
             android:authorities="edu.illinois.jchen93.bitstampapiandroid3" >
         </provider>
         
+        <provider
+            android:name=".OrderBookProvider"
+            android:authorities="edu.illinois.jchen93.bitstampapiandroid3" >
+        </provider>
+        
         <!-- 
         <receiver android:name=".NetworkReceiver">
       		<intent-filter>

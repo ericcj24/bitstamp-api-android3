@@ -46,15 +46,12 @@ import android.graphics.DashPathEffect;
 
 
 public class OrderBookFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
-	private final static String TAG="OrderBookActivity";
 	
+	private final static String TAG="OrderBookFragment";	
 	private AlarmManager alarmMgr;
-
-	private int REQUEST_CODE = 101;
+	private int REQUEST_CODE = 102;
 	// Identifies a particular Loader being used in this component
-    private static final int TRANSACTION_LOADER = 0;
-    
-    
+    private static final int ORDERBOOK_LOADER = 0;    
 	
 	public OrderBookFragment() {
         // Empty constructor required for fragment subclasses
@@ -76,9 +73,9 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
          * Initializes the CursorLoader. The URL_LOADER value is eventually passed
          * to onCreateLoader().
          */
-		getLoaderManager().initLoader(TRANSACTION_LOADER, null, this);
+		getLoaderManager().initLoader(ORDERBOOK_LOADER, null, this);
 		
-        return inflater.inflate(R.layout.fragment_chart, container, false);
+        return inflater.inflate(R.layout.fragment_orderbook_chart, container, false);
     }
 	
 	@Override
@@ -93,7 +90,7 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 		Log.i(TAG, "on resume");				
 		
 		String CHOICE = "0";
-		Intent intent = new Intent(getActivity(), TransactionUpdateService.class);
+		Intent intent = new Intent(getActivity(), OrderBookUpdateService.class);
 		intent.setData(Uri.parse(CHOICE));
 		PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
         alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
@@ -107,7 +104,7 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 		if (alarmMgr != null)
         {Log.i(TAG, "on pause");
         String CHOICE = "0";
-        Intent intent = new Intent(getActivity(), TransactionUpdateService.class);
+        Intent intent = new Intent(getActivity(), OrderBookUpdateService.class);
         intent.setData(Uri.parse(CHOICE));
         //pendingIntent.cancel();
         PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
@@ -132,16 +129,16 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 	     * Takes action based on the ID of the Loader that's being created
 	     */
 	    switch (id) {
-	        case TRANSACTION_LOADER:
+	        case ORDERBOOK_LOADER:
 	            // Returns a new CursorLoader
-	        	String[] projection = {TransactionProviderContract.TRANSACTION_DATE_COLUMN,
-	        						TransactionProviderContract.TRANSACTION_TID_COLUMN,
-	        						TransactionProviderContract.TRANSACTION_PRICE_COLUMN,
-	        						TransactionProviderContract.TRANSACTION_AMOUNT_COLUMN};
-	        	String sortOrder = TransactionProviderContract.TRANSACTION_TID_COLUMN + " DESC" +" LIMIT " + 700;
+	        	String[] projection = {OrderBookProviderContract.ORDERBOOK_TIMESTAMP_COLUMN,
+	        						OrderBookProviderContract.ORDERBOOK_KIND_COLUMN,
+	        						OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN,
+	        						OrderBookProviderContract.ORDERBOOK_AMOUNT_COLUMN};
+	        	String sortOrder = null;
 	            return new CursorLoader(
 	                        getActivity(),   // Parent activity context
-	                        TransactionProviderContract.TRANSACTIONURL_TABLE_CONTENTURI, // Table to query
+	                        OrderBookProviderContract.ORDERBOOKURL_TABLE_CONTENTURI, // Table to query
 	                        projection,      // Projection to return
 	                        null,            // No selection clause
 	                        null,            // No selection arguments
@@ -160,7 +157,7 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
          * Moves the query results into the adapter, causing the
          * ListView fronting this adapter to re-display
          */            
-        plotTransaction(returnCursor);
+        plotOrderBook(returnCursor);
         
         //mAdapter.changeCursor(returnCursor);
 	}
@@ -172,8 +169,8 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 	}
 	
 	
-	private void plotOrderBook(ArrayList<Price_Amount> ob){
-		XYPlot plot1 = (XYPlot) findViewById(R.id.chart);
+	private void plotOrderBook(Cursor cursor){
+		XYPlot plot1 = (XYPlot) findViewById(R.id.orderbookchart);
 		plot1.clear();
 		
 		int size = ob.size();
