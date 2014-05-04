@@ -46,7 +46,8 @@ import android.graphics.DashPathEffect;
 
 public class OrderBookFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 	
-	private final static String TAG="OrderBookFragment";	
+	private final static String TAG = OrderBookFragment.class.getSimpleName();
+	
 	private AlarmManager alarmMgr;
 	private int REQUEST_CODE = 102;
 	// Identifies a particular Loader being used in this component

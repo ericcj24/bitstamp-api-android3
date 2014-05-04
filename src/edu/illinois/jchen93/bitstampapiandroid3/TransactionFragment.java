@@ -14,6 +14,10 @@ import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 
+import edu.illinois.jchen93.bitstampapiandroid3.R;
+import edu.illinois.jchen93.bitstampapiandroid3.R.id;
+import edu.illinois.jchen93.bitstampapiandroid3.R.layout;
+
 import android.app.LoaderManager;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -235,7 +239,8 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
 		/*
          * Moves the query results into the adapter, causing the
          * ListView fronting this adapter to re-display
-         */            
+         */
+		if(returnCursor!=null)
         plotTransaction(returnCursor);
         
         //mAdapter.changeCursor(returnCursor);

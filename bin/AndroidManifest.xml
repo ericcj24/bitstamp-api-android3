@@ -31,15 +31,26 @@
         <service
             android:name=".OrderBookUpdateService"
             android:exported="false"/>
-        
-        <provider
+        <service
+            android:name=".TickerUpdateService"
+            android:exported="false"/>
+ 		
+ 		<provider
             android:name=".TransactionProvider"
-            android:authorities="edu.illinois.jchen93.bitstampapiandroid3" >
+            android:authorities="edu.illinois.jchen93.bitstampapiandroid3.transaction"
+            android:exported="false" >
         </provider>
         
         <provider
             android:name=".OrderBookProvider"
-            android:authorities="edu.illinois.jchen93.bitstampapiandroid3" >
+            android:authorities="edu.illinois.jchen93.bitstampapiandroid3.orderbook"
+            android:exported="false" >
+        </provider>
+        
+        <provider
+            android:name=".TickerProvider"
+            android:authorities="edu.illinois.jchen93.bitstampapiandroid3.ticker"
+            android:exported="false" >
         </provider>
         
         <!-- 

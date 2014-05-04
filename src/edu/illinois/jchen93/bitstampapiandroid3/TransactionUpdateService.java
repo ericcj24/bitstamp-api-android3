@@ -34,7 +34,7 @@ public class TransactionUpdateService extends IntentService{
 		
 	@Override
     protected void onHandleIntent(Intent workIntent) {
-		Log.i(TAG, this.toString());
+		//Log.i(TAG, this.toString());
 		// Gets data from the incoming Intent
         String dataString = workIntent.getDataString();
         

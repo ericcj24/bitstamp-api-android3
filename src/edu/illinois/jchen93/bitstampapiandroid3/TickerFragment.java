@@ -44,35 +44,7 @@ public class TickerFragment extends Fragment implements LoaderManager.LoaderCall
 	private int REQUEST_CODE = 103;
 	// Identifies a particular Loader being used in this component
     private static final int TICKER_LOADER = 0;
-
-    
-    public String[] mFromColumns = {
-    	    TickerProviderContract.TICKER_TIMESTAMP_COLUMN,
-    	    TickerProviderContract.TICKER_HIGH_COLUMN,
-    	    TickerProviderContract.TICKER_LOW_COLUMN,
-    	    TickerProviderContract.TICKER_LAST_COLUMN,
-    	    TickerProviderContract.TICKER_BID_COLUMN,
-    	    TickerProviderContract.TICKER_ASK_COLUMN,
-    	    TickerProviderContract.TICKER_VWAP_COLUMN,
-    	    TickerProviderContract.TICKER_VOLUME_COLUMN
-    };
-    	public int[] mToFields = {
-    	    R.id.PictureName
-    	};
-    // Gets a handle to a List View
-    ListView mListView = (ListView) getView().findViewById(R.id.tickerList);
-    // Defines a SimpleCursorAdapter for the ListView
-    SimpleCursorAdapter mAdapter =
-    	    new SimpleCursorAdapter(
-    	            this,                // Current context
-    	            R.layout.list_item,  // Layout for a single row
-    	            null,                // No Cursor yet
-    	            mFromColumns,        // Cursor columns to use
-    	            mToFields,           // Layout fields to use
-    	            0                    // No flags
-    	    );
-    	// Sets the adapter for the view
-    	mListView.setAdapter(mAdapter);
+    private SimpleCursorAdapter mAdapter;
 	
 	public TickerFragment() {
         // Empty constructor required for fragment subclasses
@@ -81,7 +53,7 @@ public class TickerFragment extends Fragment implements LoaderManager.LoaderCall
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "on create");       
+        Log.i(TAG, "on create");    
     }
 	
 	@Override
@@ -90,13 +62,44 @@ public class TickerFragment extends Fragment implements LoaderManager.LoaderCall
         // Inflate the layout for this fragment
 		Log.i(TAG, "on createView");
 		
-		/*
-         * Initializes the CursorLoader. The URL_LOADER value is eventually passed
-         * to onCreateLoader().
-         */
-		getLoaderManager().initLoader(TICKER_LOADER, null, this);
+		View localView = inflater.inflate(R.layout.fragment_ticker, container, false);
 		
-        return inflater.inflate(R.layout.fragment_ticker, container, false);
+		
+		String[] mFromColumns = {
+        	    TickerProviderContract.TICKER_TIMESTAMP_COLUMN,
+        	    TickerProviderContract.TICKER_HIGH_COLUMN,
+        	    TickerProviderContract.TICKER_LOW_COLUMN,
+        	    TickerProviderContract.TICKER_LAST_COLUMN,
+        	    TickerProviderContract.TICKER_BID_COLUMN,
+        	    TickerProviderContract.TICKER_ASK_COLUMN,
+        	    TickerProviderContract.TICKER_VWAP_COLUMN,
+        	    TickerProviderContract.TICKER_VOLUME_COLUMN
+        };
+        int[] mToFields = {
+        		R.id.timestamp, R.id.high, R.id.low, R.id.last, R.id.bid, R.id.ask, R.id.vwap, R.id.volume 
+        };
+        
+        // Gets a handle to a List View
+        ListView mListView = (ListView) localView.findViewById(R.id.tickerList);
+        // Defines a SimpleCursorAdapter for the ListView
+        mAdapter =
+        	    new SimpleCursorAdapter(
+        	            getActivity(),                // Current context
+        	            R.layout.ticker_items,  // Layout for a single row
+        	            null,                // No Cursor yet
+        	            mFromColumns,        // Cursor columns to use
+        	            mToFields,           // Layout fields to use
+        	            0                    // No flags
+        	    );
+    	// Sets the adapter for the view
+    	mListView.setAdapter(mAdapter);
+    	
+    	// Prepare the loader.  Either re-connect with an existing one,
+        // or start a new one.
+        getLoaderManager().initLoader(TICKER_LOADER, null, this);
+		
+		
+        return localView;
     }
 	
 	@Override
@@ -153,7 +156,8 @@ public class TickerFragment extends Fragment implements LoaderManager.LoaderCall
 	    switch (id) {
 	        case TICKER_LOADER:
 	            // Returns a new CursorLoader
-	        	String[] projection = {TickerProviderContract.TICKER_TIMESTAMP_COLUMN,
+	        	String[] projection = {TickerProviderContract.ROW_ID,
+	        						TickerProviderContract.TICKER_TIMESTAMP_COLUMN,
 	        						TickerProviderContract.TICKER_HIGH_COLUMN,
 	        						TickerProviderContract.TICKER_LOW_COLUMN,
 	        						TickerProviderContract.TICKER_LAST_COLUMN,
@@ -182,7 +186,8 @@ public class TickerFragment extends Fragment implements LoaderManager.LoaderCall
 		/*
          * Moves the query results into the adapter, causing the
          * ListView fronting this adapter to re-display
-         */       
+         */
+		if(returnCursor!=null)
         mAdapter.changeCursor(returnCursor);
 	}
 

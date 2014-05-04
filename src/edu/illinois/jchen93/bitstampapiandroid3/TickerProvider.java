@@ -34,6 +34,7 @@ public class TickerProvider extends ContentProvider{
             TickerProviderContract.TICKER_TABLE_NAME + " " +
             "(" + " " +
             TickerProviderContract.ROW_ID + " " + PRIMARY_KEY_TYPE + " ," +
+            TickerProviderContract.TICKER_TIMESTAMP_COLUMN + " " + TEXT_TYPE + " ," +
             TickerProviderContract.TICKER_HIGH_COLUMN + " " + TEXT_TYPE + " ," +
             TickerProviderContract.TICKER_LOW_COLUMN + " " + TEXT_TYPE + " ," +
             TickerProviderContract.TICKER_LAST_COLUMN + " " + TEXT_TYPE + " ," +
@@ -50,7 +51,7 @@ public class TickerProvider extends ContentProvider{
     // Defines a helper object that matches content URIs to table-specific parameters
     private static final UriMatcher sUriMatcher;
 
- // Stores the MIME types served by this provider
+    // Stores the MIME types served by this provider
     private static final SparseArray<String> sMimeTypes;
 
     /*
@@ -265,60 +266,6 @@ public class TickerProvider extends ContentProvider{
 
     }
     
-    /**
-     * Implements bulk row insertion using
-     * {@link SQLiteDatabase#insert(String, String, ContentValues) SQLiteDatabase.insert()}
-     * and SQLite transactions. The method also notifies the current
-     * {@link android.content.ContentResolver} that the {@link android.content.ContentProvider} has
-     * been changed.
-     * @see android.content.ContentProvider#bulkInsert(Uri, ContentValues[])
-     * @param uri The content URI for the insertion
-     * @param insertValuesArray A {@link android.content.ContentValues} array containing the row to
-     * insert
-     * @return The number of rows inserted.
-     */
-    @Override
-    public int bulkInsert(Uri uri, ContentValues[] insertValuesArray) {
-
-        // Gets a writeable database instance if one is not already cached
-        SQLiteDatabase localSQLiteDatabase = mHelper.getWritableDatabase();
-
-        /*
-         * Begins a transaction in "exclusive" mode. No other mutations can occur on the
-         * db until this transaction finishes.
-         */
-        localSQLiteDatabase.beginTransaction();
-
-        // Deletes all the existing rows in the table
-        localSQLiteDatabase.delete(TickerProviderContract.TICKER_TABLE_NAME, null, null);
-
-        // Gets the size of the bulk insert
-        int numTickers = insertValuesArray.length;
-
-        // Inserts each ContentValues entry in the array as a row in the database
-        for (int i = 0; i < numTickers; i++) {
-
-            localSQLiteDatabase.insert(TickerProviderContract.TICKER_TABLE_NAME,
-                    null, insertValuesArray[i]);
-        }
-
-        // Reports that the transaction was successful and should not be backed out.
-        localSQLiteDatabase.setTransactionSuccessful();
-
-        // Ends the transaction and closes the current db instances
-        localSQLiteDatabase.endTransaction();
-        localSQLiteDatabase.close();
-
-        /*
-         * Notifies the current ContentResolver that the data associated with "uri" has
-         * changed.
-         */
-
-        getContext().getContentResolver().notifyChange(uri, null);
-
-        // The semantics of bulkInsert is to return the number of rows inserted.
-        return numTickers;
-    }
     
     /**
      * Returns an UnsupportedOperationException if delete is called

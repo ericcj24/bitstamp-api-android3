@@ -10,6 +10,13 @@
     </string-array>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    <string name="titleTicker">Ticker</string>
+    <string name="timestamp">Timestamp</string>
+    <string name="high">High</string>
+    <string name="low">Low</string>
+    <string name="last">Last</string>
+    <string name="bid">Bid</string>
+    <string name="ask">Ask</string>
+    <string name="vwap">Vwap</string>
+    <string name="volume">Volume</string>
     
 </resources>

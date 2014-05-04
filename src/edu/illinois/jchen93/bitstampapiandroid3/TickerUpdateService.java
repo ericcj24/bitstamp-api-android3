@@ -2,6 +2,7 @@ package edu.illinois.jchen93.bitstampapiandroid3;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -31,7 +32,7 @@ public class TickerUpdateService extends IntentService{
 		
 	@Override
   protected void onHandleIntent(Intent workIntent) {
-		Log.i(TAG, this.toString());
+		//Log.i(TAG, this.toString());
 		// Gets data from the incoming Intent
 		String dataString = workIntent.getDataString();
       
@@ -77,20 +78,23 @@ public class TickerUpdateService extends IntentService{
 		if(newDate > databaseDate){
 			ContentResolver cr = getContentResolver();
 			// find all rows that has date bigger than newDate
-			String selection = TickerProviderContract.TICKER_TIMESTAMP_COLUMN + " = " + newDate;
-			String[] projection = null;
-			String[] selectionArgs = null;
-			String sortOrder = null;
-			Cursor cursor = cr.query(TickerProviderContract.CONTENT_URI, 
-									projection, 
-									selection, 
-									selectionArgs, 
-									sortOrder);
+			//String selection = null;
+			//String[] projection = null;
+			//String[] selectionArgs = null;
+			//String sortOrder = null;
+			//Cursor cursor = cr.query(TickerProviderContract.CONTENT_URI, 
+			//						projection, 
+			//						selection, 
+			//						selectionArgs, 
+			//						sortOrder);
 						
-			if (cursor.getCount()==0) {
-
+			//if (cursor.getCount()==0) {
+				long timeLong = newDate*1000;
+				SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+            	String formattedDate =  sdf.format(timeLong);
+            	
 				ContentValues values = new ContentValues();
-				values.put(TickerProviderContract.TICKER_TIMESTAMP_COLUMN, ticker.getTimestamp());
+				values.put(TickerProviderContract.TICKER_TIMESTAMP_COLUMN, formattedDate);
 				values.put(TickerProviderContract.TICKER_HIGH_COLUMN, ticker.getHigh());
 				values.put(TickerProviderContract.TICKER_LOW_COLUMN, ticker.getLow());
 				values.put(TickerProviderContract.TICKER_LAST_COLUMN, ticker.getLast());
@@ -100,8 +104,8 @@ public class TickerUpdateService extends IntentService{
 				values.put(TickerProviderContract.TICKER_VOLUME_COLUMN, ticker.getVolume());
 				cr.insert(TickerProviderContract.CONTENT_URI, values);
 				
-			}
-			cursor.close();
+			//}
+			//cursor.close();
 			databaseDate = newDate;
 		}
 	}
