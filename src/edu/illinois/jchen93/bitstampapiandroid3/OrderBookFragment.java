@@ -35,8 +35,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -170,7 +169,7 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 	
 	
 	private void plotOrderBook(Cursor cursor){
-		XYPlot plot1 = (XYPlot) findViewById(R.id.orderbookchart);
+		XYPlot plot1 = (XYPlot) getView().findViewById(R.id.orderbookchart);
 		plot1.clear();
 		
 		int size = ob.size();

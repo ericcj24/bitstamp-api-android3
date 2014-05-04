@@ -1,8 +1,7 @@
+package edu.illinois.jchen93.bitstampapiandroid3;
+
 import android.net.Uri;
 import android.provider.BaseColumns;
-
-
-
 
 /**
  *

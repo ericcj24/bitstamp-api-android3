@@ -2,16 +2,11 @@ package edu.illinois.jchen93.bitstampapiandroid3;
 
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -173,15 +168,11 @@ public class MainActivity extends FragmentActivity {
             View rootView = inflater.inflate(R.layout.fragment_chart, container, false);
             int i = getArguments().getInt(ARG_CHART_NUMBER);
             String chart = getResources().getStringArray(R.array.drawer_array)[i];
-            
-
 
             // Replace whatever is in the fragment_container view with this fragment,
             // and add the transaction to the back stack so the user can navigate back
             //transaction.replace(R.id.content_frame, newFragment);
             //transaction.addToBackStack(null);
-            
-            
             
             getActivity().setTitle(chart);
             return rootView;
