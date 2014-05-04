@@ -25,18 +25,9 @@ public class OrderBookUpdateService extends IntentService{
 	static final String TAG = "OrderBookUpdateService";
 	
 	static final String TPATH = "https://www.bitstamp.net/api/order_book/";
-	static final String KEY_ID = "_id";
-	static final String KEY_TIMESTAMP = "timestamp";
-	static final String KEY_KIND = "kind"; // bid or ask
-	static final String KEY_PRICE = "price";
-	static final String KEY_AMOUNT = "amount";
-	static final String ORDERBOOK_TABLE_NAME = "orderbook";
-	static final String NAME = "edu.illinois.jchen93.bitstampapiandroid2.OrderBookUpdateService";
-	static final public String ORDERBOOK_RESULT = "edu.illinois.jchen93.bitstampapiandroid2.OrderBookUpdateService.PROCESSED";
 	static boolean isFirst = true;
 	static long mostRecentTime = 0;
 	
-	private LocalBroadcastManager localBroadcaster = LocalBroadcastManager.getInstance(this);
 	/**
 	   * A constructor is required, and must call the super IntentService(String)
 	   * constructor with a name for the worker thread.

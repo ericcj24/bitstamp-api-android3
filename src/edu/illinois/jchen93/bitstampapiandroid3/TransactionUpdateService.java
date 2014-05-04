@@ -17,12 +17,9 @@ import android.util.Log;
 
 
 public class TransactionUpdateService extends IntentService{
-	static final String TAG = "TransactionUpdateService";
+	private static final String TAG = TransactionUpdateService.class.getSimpleName();
 	
 	static final String TPATH = "https://www.bitstamp.net/api/transactions/";
-	static final String TRANSACTION_TABLE_NAME = "transactions";
-	static final String NAME = "edu.illinois.jchen93.bitstampapiandroid2.TransactionUpdateService";
-	static final public String TRANSACTION_RESULT = "edu.illinois.jchen93.bitstampapiandroid2.TransactionUpdateService.PROCESSED";	
 	static boolean isFirst = true;
 	static long databaseDate = 0;
 	
@@ -118,14 +115,6 @@ public class TransactionUpdateService extends IntentService{
 			databaseDate = newDate;
 		}
 		Log.i(TAG, "count size is: " + count);
-		return count;
-	}
-	
-
-	
-	private int fetchTradeBook(){
-		int count = 0;
-		
 		return count;
 	}
 	

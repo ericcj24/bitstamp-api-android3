@@ -19,7 +19,7 @@ import android.widget.ListView;
 
 
 public class MainActivity extends FragmentActivity {
-	private final static String TAG="mainActivity";
+	private static final String TAG = MainActivity.class.getSimpleName();
 	
 	private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -118,6 +118,14 @@ public class MainActivity extends FragmentActivity {
 		    FragmentManager fragmentManager = getFragmentManager();
 		    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         }
+        else if(position == 2){
+		    Fragment fragment = new TickerFragment();
+		    //Bundle args = new Bundle();
+		    //args.putInt(TransactionFragment.ARG_POSITION, position);
+		    //newFragment.setArguments(args);
+		    FragmentManager fragmentManager = getFragmentManager();
+		    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+		}
     	
 
         // update selected item and title, then close the drawer
@@ -154,7 +162,7 @@ public class MainActivity extends FragmentActivity {
     /**
      * Fragment that appears in the "content_frame", shows a planet
      * static
-     */
+     
     public class ChartFragment extends Fragment {
         public static final String ARG_CHART_NUMBER = "chart_number";
 
@@ -177,5 +185,5 @@ public class MainActivity extends FragmentActivity {
             getActivity().setTitle(chart);
             return rootView;
         }
-    }
+    }*/
 }

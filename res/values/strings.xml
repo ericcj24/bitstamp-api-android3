@@ -6,9 +6,10 @@
     <string-array name="drawer_array">
         <item>Transactions</item>
         <item>Order Book</item>
-        <item>Hello There</item>
+        <item>Ticker</item>
     </string-array>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="titleTicker">Ticker</string>
     
 </resources>

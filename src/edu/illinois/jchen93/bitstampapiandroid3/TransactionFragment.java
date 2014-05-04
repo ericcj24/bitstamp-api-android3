@@ -37,7 +37,8 @@ import android.view.ViewGroup;
 
 public class TransactionFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 	
-	private final static String TAG="TransactionFragment";
+	private static final String TAG = TransactionFragment.class.getSimpleName();
+	
 	private AlarmManager alarmMgr;
 	private int REQUEST_CODE = 101;
 	// Identifies a particular Loader being used in this component
