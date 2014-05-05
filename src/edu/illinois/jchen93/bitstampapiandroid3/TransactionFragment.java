@@ -218,7 +218,7 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
 	        						TransactionProviderContract.TRANSACTION_TID_COLUMN,
 	        						TransactionProviderContract.TRANSACTION_PRICE_COLUMN,
 	        						TransactionProviderContract.TRANSACTION_AMOUNT_COLUMN};
-	        	String sortOrder = TransactionProviderContract.TRANSACTION_TID_COLUMN + " DESC" +" LIMIT " + 700;
+	        	String sortOrder = TransactionProviderContract.TRANSACTION_TID_COLUMN + " DESC" +" LIMIT " + 2000;
 	            return new CursorLoader(
 	                        getActivity(),   // Parent activity context
 	                        TransactionProviderContract.TRANSACTIONURL_TABLE_CONTENTURI, // Table to query

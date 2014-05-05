@@ -26,7 +26,6 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
