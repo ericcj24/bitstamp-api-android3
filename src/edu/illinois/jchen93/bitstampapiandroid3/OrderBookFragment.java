@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Vector;
 
 import com.androidplot.ui.AnchorPosition;
@@ -174,10 +175,10 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 		XYPlot plot1 = (XYPlot) getView().findViewById(R.id.orderbookchart);
 		plot1.clear();
 		
-		ArrayList<Double> x1 = new ArrayList<Double>();
-		ArrayList<Double> y1 = new ArrayList<Double>();
-		ArrayList<Double> x2 = new ArrayList<Double>();
-		ArrayList<Double> y2 = new ArrayList<Double>();
+		List<Double> x1 = new ArrayList<Double>();
+		List<Double> y1 = new ArrayList<Double>();
+		List<Double> x2 = new ArrayList<Double>();
+		List<Double> y2 = new ArrayList<Double>();
 		
 		//int nask = Integer.parseInt(ob.get(size-1).getPrice());
 		//int nbid = Integer.parseInt(ob.get(size-1).getAmount());

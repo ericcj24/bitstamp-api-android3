@@ -70,51 +70,6 @@ public class OrderBookUpdateService extends IntentService{
         }
 	}
 	
-	/**private ArrayList<Price_Amount> fetchOrderBookTemp(){
-		ArrayList<Price_Amount> rt = new ArrayList<Price_Amount>();
-		 try {
-	        	URL url=new URL(TPATH);
-	            HttpURLConnection c=(HttpURLConnection)url.openConnection();
-	            c.setRequestMethod("GET");
-	        	c.setReadTimeout(15000);
-	        	c.connect();    	
-	            
-	        	int responseCode = c.getResponseCode();
-	        	Log.i(TAG, "order book response code: " + Integer.toString(responseCode));
-	        	if (responseCode == 200){
-	        		ObjectMapper mapper = new ObjectMapper();
-	                OrderBook ob = mapper.readValue(c.getInputStream(), OrderBook.class);
-	                
-	                
-	                int askSize = 0;
-					int bidSize = 0;
-	                for(ArrayList<String> temp : ob.getAsks()){
-	                	if(Double.parseDouble(temp.get(0)) > 300 &&  Double.parseDouble(temp.get(0))< 650 && Double.parseDouble(temp.get(1)) < 5){
-	                		Price_Amount newAsk = new Price_Amount(temp.get(0), temp.get(1));
-	                		rt.add(newAsk);
-	                		askSize++;}
-	                }
-	                for(ArrayList<String> temp : ob.getBids()){
-	                	if(Double.parseDouble(temp.get(0)) > 300 &&  Double.parseDouble(temp.get(0))< 650 && Double.parseDouble(temp.get(1)) < 5){
-	                		Price_Amount newBid = new Price_Amount(temp.get(0), temp.get(1));
-	                		rt.add(newBid);
-	                		bidSize++;}
-	                }
-	                rt.add(new Price_Amount(String.valueOf(askSize), String.valueOf(bidSize)));
-
-	        	}
-		 }catch(java.net.ConnectException e){
-			 Log.e(TAG, e.toString());        	
-	     }catch(java.net.UnknownHostException e){
-	    	 Log.e(TAG, e.toString());
-	     }catch (Exception e) {
-	    	 // TODO Auto-generated catch block
-	    	 Log.e(TAG, e.toString());
-	     }finally{
-	    	 //c.disconnect();
-	     }
-		 return rt;
-	}*/
 	
 	private int fetchOrderBook(){
 		int count = 0;        
@@ -156,6 +111,8 @@ public class OrderBookUpdateService extends IntentService{
 
 		int askSize = orderBook.getAsks().size();
 		int bidSize = orderBook.getBids().size();
+		Log.i(TAG, " ask size is: "+ askSize);
+		Log.i(TAG, " bid size is: "+ bidSize);
 		for(ArrayList<String> temp : orderBook.getAsks()){
 			if(Double.parseDouble(temp.get(0)) > 300 &&  Double.parseDouble(temp.get(0))< 600){
 				ContentValues values = new ContentValues();
@@ -182,4 +139,50 @@ public class OrderBookUpdateService extends IntentService{
 		return count;
 	}
 	
+	
+	/**private ArrayList<Price_Amount> fetchOrderBookTemp(){
+	ArrayList<Price_Amount> rt = new ArrayList<Price_Amount>();
+	 try {
+        	URL url=new URL(TPATH);
+            HttpURLConnection c=(HttpURLConnection)url.openConnection();
+            c.setRequestMethod("GET");
+        	c.setReadTimeout(15000);
+        	c.connect();    	
+            
+        	int responseCode = c.getResponseCode();
+        	Log.i(TAG, "order book response code: " + Integer.toString(responseCode));
+        	if (responseCode == 200){
+        		ObjectMapper mapper = new ObjectMapper();
+                OrderBook ob = mapper.readValue(c.getInputStream(), OrderBook.class);
+                
+                
+                int askSize = 0;
+				int bidSize = 0;
+                for(ArrayList<String> temp : ob.getAsks()){
+                	if(Double.parseDouble(temp.get(0)) > 300 &&  Double.parseDouble(temp.get(0))< 650 && Double.parseDouble(temp.get(1)) < 5){
+                		Price_Amount newAsk = new Price_Amount(temp.get(0), temp.get(1));
+                		rt.add(newAsk);
+                		askSize++;}
+                }
+                for(ArrayList<String> temp : ob.getBids()){
+                	if(Double.parseDouble(temp.get(0)) > 300 &&  Double.parseDouble(temp.get(0))< 650 && Double.parseDouble(temp.get(1)) < 5){
+                		Price_Amount newBid = new Price_Amount(temp.get(0), temp.get(1));
+                		rt.add(newBid);
+                		bidSize++;}
+                }
+                rt.add(new Price_Amount(String.valueOf(askSize), String.valueOf(bidSize)));
+
+        	}
+	 }catch(java.net.ConnectException e){
+		 Log.e(TAG, e.toString());        	
+     }catch(java.net.UnknownHostException e){
+    	 Log.e(TAG, e.toString());
+     }catch (Exception e) {
+    	 // TODO Auto-generated catch block
+    	 Log.e(TAG, e.toString());
+     }finally{
+    	 //c.disconnect();
+     }
+	 return rt;
+}*/
 }
