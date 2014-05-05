@@ -2,6 +2,7 @@ package edu.illinois.jchen93.bitstampapiandroid3;
 
 import java.util.ArrayList;
 
+import java.lang.reflect.Array;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
@@ -93,7 +94,7 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 		intent.setData(Uri.parse(CHOICE));
 		PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
         alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
-        alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME, 0, 2500, pendingIntent);
+        alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME, 0, 7000, pendingIntent);
         	
 	}
 	
@@ -134,7 +135,7 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 	        						OrderBookProviderContract.ORDERBOOK_KIND_COLUMN,
 	        						OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN,
 	        						OrderBookProviderContract.ORDERBOOK_AMOUNT_COLUMN};
-	        	String sortOrder = null;
+	        	String sortOrder = OrderBookProviderContract.ORDERBOOK_TIMESTAMP_COLUMN + " DESC" + " LIMIT " + 3000;
 	            return new CursorLoader(
 	                        getActivity(),   // Parent activity context
 	                        OrderBookProviderContract.ORDERBOOKURL_TABLE_CONTENTURI, // Table to query
@@ -155,7 +156,8 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 		/*
          * Moves the query results into the adapter, causing the
          * ListView fronting this adapter to re-display
-         */            
+         */ 
+		if(returnCursor!=null)
         plotOrderBook(returnCursor);
         
         //mAdapter.changeCursor(returnCursor);
@@ -172,28 +174,29 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 		XYPlot plot1 = (XYPlot) getView().findViewById(R.id.orderbookchart);
 		plot1.clear();
 		
-		int size = cursor.getCount();
+		ArrayList<Double> x1 = new ArrayList<Double>();
+		ArrayList<Double> y1 = new ArrayList<Double>();
+		ArrayList<Double> x2 = new ArrayList<Double>();
+		ArrayList<Double> y2 = new ArrayList<Double>();
 		
 		//int nask = Integer.parseInt(ob.get(size-1).getPrice());
 		//int nbid = Integer.parseInt(ob.get(size-1).getAmount());
-		int nask = 100;
-		int nbid = 100;
-		Number[] x1 = new Number[nask];
-		Number[] y1 = new Number[nask];
-		int i=0;
-		for(i=0; i<nask; i++){
-			x1[i] = i;
-			y1[i] = 10;
+		cursor.moveToFirst();	
+		while(cursor.isAfterLast() == false){
+			String type = cursor.getString(cursor.getColumnIndex(OrderBookProviderContract.ORDERBOOK_KIND_COLUMN));
+			if(type == "ASK"){
+				x1.add(Double.parseDouble(cursor.getString(cursor.getColumnIndex(OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN))));
+				y1.add(Double.parseDouble(cursor.getString(cursor.getColumnIndex(OrderBookProviderContract.ORDERBOOK_AMOUNT_COLUMN))));
+			}
+			if(type == "BID"){
+				x2.add(Double.parseDouble(cursor.getString(cursor.getColumnIndex(OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN))));
+				y2.add(Double.parseDouble(cursor.getString(cursor.getColumnIndex(OrderBookProviderContract.ORDERBOOK_AMOUNT_COLUMN))));
+			}
+			cursor.moveToNext();
 		}
 
-		Number[] x2 = new Number[nbid];
-		Number[] y2 = new Number[nbid];
-		for(int j=0; j<nbid; j++){
-			x2[j] = j;
-			y2[j] = 20;
-		}
-		XYSeries series1 = new SimpleXYSeries(Arrays.asList(x1),Arrays.asList(y1),"Asks");
-		XYSeries series2 = new SimpleXYSeries(Arrays.asList(x2),Arrays.asList(y2),"Bids");
+		XYSeries series1 = new SimpleXYSeries(x1,y1,"Asks");
+		XYSeries series2 = new SimpleXYSeries(x2,y2,"Bids");
 		
 		plot1.getGraphWidget().getGridBackgroundPaint().setColor(Color.BLACK);
         plot1.getGraphWidget().getDomainGridLinePaint().setColor(Color.WHITE);

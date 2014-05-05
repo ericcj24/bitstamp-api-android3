@@ -111,7 +111,7 @@ public class MainActivity extends FragmentActivity {
 		    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         }
         else if(position == 1){
-        	Fragment fragment = new TestFragment();
+        	Fragment fragment = new OrderBookFragment();
 		    //Bundle args = new Bundle();
 		    //args.putInt(TransactionFragment.ARG_POSITION, position);
 		    //newFragment.setArguments(args);

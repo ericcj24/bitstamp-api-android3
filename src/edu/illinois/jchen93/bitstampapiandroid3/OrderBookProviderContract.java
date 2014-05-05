@@ -17,7 +17,7 @@ public final class OrderBookProviderContract implements BaseColumns {
     public static final String SCHEME = "content";
 
     // The provider's authority
-    public static final String AUTHORITY = "edu.illinois.jchen93.bitstampapiandroid3";
+    public static final String AUTHORITY = "edu.illinois.jchen93.bitstampapiandroid3.orderbook";
 
 	/**
      *  The MIME type for a content URI that would return multiple rows
