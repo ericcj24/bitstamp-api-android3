@@ -81,7 +81,7 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 		intent.setData(Uri.parse(CHOICE));
 		PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
         alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
-        alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME, 0, 7000, pendingIntent);
+        alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME, 0, 10000, pendingIntent);
         	
 	}
 	
@@ -99,7 +99,7 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 			Log.i(TAG, "alarm is up, cancelling");
 	        //Intent intent = new Intent(getActivity(), OrderBookUpdateService.class);
 	        //pendingIntent.cancel();
-	        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
+	        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 	        alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
 	        alarmMgr.cancel(pendingIntent);
 		}
@@ -128,9 +128,7 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 	        						OrderBookProviderContract.ORDERBOOK_KIND_COLUMN,
 	        						OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN,
 	        						OrderBookProviderContract.ORDERBOOK_AMOUNT_COLUMN};
-	        	String sortOrder = null;
-	        	Log.i(TAG, "starting to query");
-	        	//OrderBookProviderContract.ORDERBOOK_TIMESTAMP_COLUMN + " DESC" + " LIMIT " + 1000;
+	        	String sortOrder = OrderBookProviderContract.ORDERBOOK_TIMESTAMP_COLUMN + " DESC" + " LIMIT " + 3000;
 	            return new CursorLoader(
 	                        getActivity(),   // Parent activity context
 	                        OrderBookProviderContract.ORDERBOOKURL_TABLE_CONTENTURI, // Table to query
