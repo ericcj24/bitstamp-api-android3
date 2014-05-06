@@ -98,15 +98,19 @@ public class TransactionFragment extends Fragment implements LoaderManager.Loade
 	@Override
 	public void onPause(){
 		super.onPause();
-		if (alarmMgr != null)
-        {Log.i(TAG, "on pause");
-        String CHOICE = "0";
-        Intent intent = new Intent(getActivity(), TransactionUpdateService.class);
-        intent.setData(Uri.parse(CHOICE));
-        //pendingIntent.cancel();
-        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
-        alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
-        alarmMgr.cancel(pendingIntent);}
+		Log.i(TAG, "on pause");
+		
+		String CHOICE = "0";
+		Intent intent = new Intent(getActivity(), TransactionUpdateService.class);
+		intent.setData(Uri.parse(CHOICE));
+		
+		boolean alarmUp = (PendingIntent.getService(getActivity(), REQUEST_CODE, intent, PendingIntent.FLAG_NO_CREATE) != null);
+		if (alarmUp){
+			Log.i(TAG, "transaction alarm is cancelling");
+			PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
+			alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+			alarmMgr.cancel(pendingIntent);
+		}
 	}
 	
 	@Override

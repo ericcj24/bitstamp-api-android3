@@ -1,19 +1,5 @@
 package edu.illinois.jchen93.bitstampapiandroid3;
 
-import java.text.FieldPosition;
-import java.text.Format;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-
-import com.androidplot.ui.SizeLayoutType;
-import com.androidplot.ui.SizeMetrics;
-import com.androidplot.xy.LineAndPointFormatter;
-import com.androidplot.xy.SimpleXYSeries;
-import com.androidplot.xy.XYPlot;
-import com.androidplot.xy.XYSeries;
-
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Fragment;
@@ -24,8 +10,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -125,15 +109,20 @@ public class TickerFragment extends Fragment implements LoaderManager.LoaderCall
 	@Override
 	public void onPause(){
 		super.onPause();
-		if (alarmMgr != null)
-        {Log.i(TAG, "on pause");
-        String CHOICE = "2";
-        Intent intent = new Intent(getActivity(), TickerUpdateService.class);
-        intent.setData(Uri.parse(CHOICE));
-        //pendingIntent.cancel();
-        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
-        alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
-        alarmMgr.cancel(pendingIntent);}
+		Log.i(TAG, "on pause");
+		
+		String CHOICE = "2";
+	    Intent intent = new Intent(getActivity(), TickerUpdateService.class);
+	    intent.setData(Uri.parse(CHOICE));
+	    
+	    boolean alarmUp = (PendingIntent.getService(getActivity(), REQUEST_CODE, intent, PendingIntent.FLAG_NO_CREATE) != null);
+		if (alarmUp){
+			Log.i(TAG, "ticker alarm is cancelling");
+			//pendingIntent.cancel();
+			PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
+			alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+			alarmMgr.cancel(pendingIntent);
+		}
 	}
 	
 	@Override

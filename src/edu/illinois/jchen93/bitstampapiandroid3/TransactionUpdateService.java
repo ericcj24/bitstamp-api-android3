@@ -20,7 +20,6 @@ public class TransactionUpdateService extends IntentService{
 	private static final String TAG = TransactionUpdateService.class.getSimpleName();
 	
 	static final String TPATH = "https://www.bitstamp.net/api/transactions/";
-	static boolean isFirst = true;
 	static long databaseDate = 0;
 	
 	
@@ -40,8 +39,6 @@ public class TransactionUpdateService extends IntentService{
         
 		int count = fetchTransactions();
 		Log.i(TAG, "get new count : " + Long.toString(count));
-		Log.i(TAG, "isFirst " + isFirst);
-		
 	}
 	
 	

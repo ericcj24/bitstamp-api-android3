@@ -19,7 +19,6 @@ public class TickerUpdateService extends IntentService{
 	private static final String TAG = TickerUpdateService.class.getSimpleName();
 	
 	static final String TPATH = "https://www.bitstamp.net/api/ticker/";
-	static boolean isFirst = true;
 	static long databaseDate = 0;
 	
 	/**
@@ -37,7 +36,6 @@ public class TickerUpdateService extends IntentService{
 		String dataString = workIntent.getDataString();
       
 		fetchTicker();
-		Log.i(TAG, "isFirst " + isFirst);
 	}
 	
 	

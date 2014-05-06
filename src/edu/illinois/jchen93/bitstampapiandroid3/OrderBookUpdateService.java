@@ -26,7 +26,6 @@ public class OrderBookUpdateService extends IntentService{
 	static final String TAG = OrderBookUpdateService.class.getSimpleName();
 	
 	static final String TPATH = "https://www.bitstamp.net/api/order_book/";
-	static boolean isFirst = true;
 	
 	/**
 	   * A constructor is required, and must call the super IntentService(String)
@@ -48,21 +47,8 @@ public class OrderBookUpdateService extends IntentService{
         	case 0:    		
         		break;
         	case 1:
-        		//int orderbookCount = fetchOrderBook();
-        		//Log.i(TAG, "new order book count: " + Integer.toString(orderbookCount));
-        		//if(orderbookCount>0 || isFirst){
-        			//isFirst = false;
-        			/*
-        			 * new tradebook, database changed!
-        		     * Creates a new Intent containing a Uri object
-        		     * BROADCAST_ACTION is a custom Intent action
-        		     */
-        			// in the last postion of arraylist, contains a pair of string descripe the size of asks, bids
-        			
-        			int count = fetchOrderBook();
-        			Log.i(TAG, "count is: "+ count);
-
-        		//}
+        		int count = fetchOrderBook();
+        		Log.i(TAG, "count is: "+ count);
         		break;
         	default:
         		break;
@@ -113,28 +99,26 @@ public class OrderBookUpdateService extends IntentService{
 		int bidSize = orderBook.getBids().size();
 		Log.i(TAG, " ask size is: "+ askSize);
 		Log.i(TAG, " bid size is: "+ bidSize);
-		for(ArrayList<String> temp : orderBook.getAsks()){
-			if(Double.parseDouble(temp.get(0)) > 400 &&  Double.parseDouble(temp.get(0))< 500){
+		ArrayList<ArrayList<String>> askList = orderBook.getAsks();
+		for(int i=0; i<askList.size()/10; i++){		
 				ContentValues values = new ContentValues();
 				values.put(OrderBookProviderContract.ORDERBOOK_TIMESTAMP_COLUMN, timeNow);
 				values.put(OrderBookProviderContract.ORDERBOOK_KIND_COLUMN, "ASK");
-				values.put(OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN, temp.get(0));
-				values.put(OrderBookProviderContract.ORDERBOOK_AMOUNT_COLUMN, temp.get(1));
+				values.put(OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN, askList.get(i).get(0));
+				values.put(OrderBookProviderContract.ORDERBOOK_AMOUNT_COLUMN, askList.get(i).get(1));
 				cr.insert(OrderBookProviderContract.CONTENT_URI, values);
-				count++;
-			}
+				count++;			
 		}
 
-		for(ArrayList<String> temp : orderBook.getBids()){
-			if(Double.parseDouble(temp.get(0)) > 400 &&  Double.parseDouble(temp.get(0))< 500){
+		ArrayList<ArrayList<String>> bidList = orderBook.getBids();
+		for(int i=0; i<bidList.size()/10; i++){			
 				ContentValues values = new ContentValues();
 				values.put(OrderBookProviderContract.ORDERBOOK_TIMESTAMP_COLUMN, timeNow);
 				values.put(OrderBookProviderContract.ORDERBOOK_KIND_COLUMN, "BID");
-				values.put(OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN, temp.get(0));
-				values.put(OrderBookProviderContract.ORDERBOOK_AMOUNT_COLUMN, temp.get(1));
+				values.put(OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN, bidList.get(i).get(0));
+				values.put(OrderBookProviderContract.ORDERBOOK_AMOUNT_COLUMN, bidList.get(i).get(1));
 				cr.insert(OrderBookProviderContract.CONTENT_URI, values);
-				count++;
-			}
+				count++;		
 		}				
 		return count;
 	}

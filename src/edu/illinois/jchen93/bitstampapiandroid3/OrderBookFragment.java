@@ -88,19 +88,21 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 	@Override
 	public void onPause(){
 		super.onPause();
-		if (alarmMgr != null)
-        {
-			Log.i(TAG, "on pause");
-	        String CHOICE = "1";
-	        Intent intent = new Intent(getActivity(), OrderBookUpdateService.class);
-	        intent.setData(Uri.parse(CHOICE));
+		Log.i(TAG, "on pause");
+		
+		String CHOICE = "1";
+		Intent intent = new Intent(getActivity(), OrderBookUpdateService.class);
+		intent.setData(Uri.parse(CHOICE));
+		boolean alarmUp = (PendingIntent.getService(getActivity(), REQUEST_CODE, intent, PendingIntent.FLAG_NO_CREATE) != null);
+		
+		if(alarmUp){
+			Log.i(TAG, "alarm is up, cancelling");
+	        //Intent intent = new Intent(getActivity(), OrderBookUpdateService.class);
 	        //pendingIntent.cancel();
 	        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
 	        alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
 	        alarmMgr.cancel(pendingIntent);
-	        // use other algorithm to determine
-	        if(alarmMgr==null)Log.i(TAG, "orderbook alarm cancled");
-        }
+		}
 	}
 	
 	@Override
@@ -127,6 +129,7 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 	        						OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN,
 	        						OrderBookProviderContract.ORDERBOOK_AMOUNT_COLUMN};
 	        	String sortOrder = null;
+	        	Log.i(TAG, "starting to query");
 	        	//OrderBookProviderContract.ORDERBOOK_TIMESTAMP_COLUMN + " DESC" + " LIMIT " + 1000;
 	            return new CursorLoader(
 	                        getActivity(),   // Parent activity context
@@ -149,9 +152,10 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
          * Moves the query results into the adapter, causing the
          * ListView fronting this adapter to re-display
          */ 
-		if(returnCursor!=null)
-        plotOrderBook(returnCursor);
-        
+		if(returnCursor!=null){
+			Log.i(TAG, "fancy sth?");
+			plotOrderBook(returnCursor);
+        }      
         //mAdapter.changeCursor(returnCursor);
 	}
 
@@ -173,14 +177,16 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 		
 		//int nask = Integer.parseInt(ob.get(size-1).getPrice());
 		//int nbid = Integer.parseInt(ob.get(size-1).getAmount());
+		Log.i(TAG, String.valueOf(cursor.getCount()));
 		cursor.moveToFirst();	
 		while(cursor.isAfterLast() == false){
 			String type = cursor.getString(cursor.getColumnIndex(OrderBookProviderContract.ORDERBOOK_KIND_COLUMN));
-			if(type == "ASK"){
-				x1.add(Double.parseDouble(cursor.getString(cursor.getColumnIndex(OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN))));
+			if(type.equals("ASK")){
+				String temp = cursor.getString(cursor.getColumnIndex(OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN));
+				x1.add(Double.parseDouble(temp));
 				y1.add(Double.parseDouble(cursor.getString(cursor.getColumnIndex(OrderBookProviderContract.ORDERBOOK_AMOUNT_COLUMN))));
 			}
-			if(type == "BID"){
+			if(type.equals("BID")){
 				x2.add(Double.parseDouble(cursor.getString(cursor.getColumnIndex(OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN))));
 				y2.add(Double.parseDouble(cursor.getString(cursor.getColumnIndex(OrderBookProviderContract.ORDERBOOK_AMOUNT_COLUMN))));
 			}
