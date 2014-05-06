@@ -53,7 +53,7 @@ public class TransactionUpdateService extends IntentService{
         	c.connect();
             
         	int responseCode = c.getResponseCode();
-        	Log.i(TAG, "response code: " + Integer.toString(responseCode));
+        	//Log.i(TAG, "response code: " + Integer.toString(responseCode));
         	if (responseCode == 200){
         		ObjectMapper mapper = new ObjectMapper();
         		List<Transaction> transactionList = mapper.readValue(c.getInputStream(), new TypeReference<ArrayList<Transaction>>() { });

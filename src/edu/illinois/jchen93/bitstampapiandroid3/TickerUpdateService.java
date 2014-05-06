@@ -49,7 +49,7 @@ public class TickerUpdateService extends IntentService{
 			c.connect();
   
 			int responseCode = c.getResponseCode();
-			Log.i(TAG, "response code: " + Integer.toString(responseCode));
+			//Log.i(TAG, "response code: " + Integer.toString(responseCode));
 			if (responseCode == 200){
 				ObjectMapper mapper = new ObjectMapper();
 				Ticker ticker = mapper.readValue(c.getInputStream(), Ticker.class);

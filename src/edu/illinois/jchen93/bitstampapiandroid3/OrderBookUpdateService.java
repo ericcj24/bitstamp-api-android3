@@ -67,7 +67,7 @@ public class OrderBookUpdateService extends IntentService{
         	c.connect();
             
         	int responseCode = c.getResponseCode();
-        	Log.i(TAG, "order book response code: " + Integer.toString(responseCode));
+        	//Log.i(TAG, "order book response code: " + Integer.toString(responseCode));
         	if (responseCode == 200){
         		ObjectMapper mapper = new ObjectMapper();
                 OrderBook ob = mapper.readValue(c.getInputStream(), OrderBook.class);
@@ -118,7 +118,7 @@ public class OrderBookUpdateService extends IntentService{
 				values.put(OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN, bidList.get(i).get(0));
 				values.put(OrderBookProviderContract.ORDERBOOK_AMOUNT_COLUMN, bidList.get(i).get(1));
 				cr.insert(OrderBookProviderContract.CONTENT_URI, values);
-				count++;		
+				count++;
 		}				
 		return count;
 	}
