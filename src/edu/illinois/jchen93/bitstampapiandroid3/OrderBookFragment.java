@@ -2,22 +2,9 @@ package edu.illinois.jchen93.bitstampapiandroid3;
 
 import java.util.ArrayList;
 
-import java.lang.reflect.Array;
-import java.text.FieldPosition;
-import java.text.Format;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Vector;
 
-import com.androidplot.ui.AnchorPosition;
-import com.androidplot.ui.SizeLayoutType;
-import com.androidplot.ui.SizeMetrics;
-import com.androidplot.ui.XLayoutStyle;
-import com.androidplot.ui.YLayoutStyle;
+import java.util.List;
+
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
@@ -31,7 +18,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -103,14 +89,18 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 	public void onPause(){
 		super.onPause();
 		if (alarmMgr != null)
-        {Log.i(TAG, "on pause");
-        String CHOICE = "1";
-        Intent intent = new Intent(getActivity(), OrderBookUpdateService.class);
-        intent.setData(Uri.parse(CHOICE));
-        //pendingIntent.cancel();
-        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
-        alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
-        alarmMgr.cancel(pendingIntent);}
+        {
+			Log.i(TAG, "on pause");
+	        String CHOICE = "1";
+	        Intent intent = new Intent(getActivity(), OrderBookUpdateService.class);
+	        intent.setData(Uri.parse(CHOICE));
+	        //pendingIntent.cancel();
+	        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
+	        alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+	        alarmMgr.cancel(pendingIntent);
+	        // use other algorithm to determine
+	        if(alarmMgr==null)Log.i(TAG, "orderbook alarm cancled");
+        }
 	}
 	
 	@Override
@@ -136,7 +126,8 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 	        						OrderBookProviderContract.ORDERBOOK_KIND_COLUMN,
 	        						OrderBookProviderContract.ORDERBOOK_PRICE_COLUMN,
 	        						OrderBookProviderContract.ORDERBOOK_AMOUNT_COLUMN};
-	        	String sortOrder = OrderBookProviderContract.ORDERBOOK_TIMESTAMP_COLUMN + " DESC" + " LIMIT " + 3000;
+	        	String sortOrder = null;
+	        	//OrderBookProviderContract.ORDERBOOK_TIMESTAMP_COLUMN + " DESC" + " LIMIT " + 1000;
 	            return new CursorLoader(
 	                        getActivity(),   // Parent activity context
 	                        OrderBookProviderContract.ORDERBOOKURL_TABLE_CONTENTURI, // Table to query

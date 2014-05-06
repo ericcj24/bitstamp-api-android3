@@ -114,7 +114,7 @@ public class OrderBookUpdateService extends IntentService{
 		Log.i(TAG, " ask size is: "+ askSize);
 		Log.i(TAG, " bid size is: "+ bidSize);
 		for(ArrayList<String> temp : orderBook.getAsks()){
-			if(Double.parseDouble(temp.get(0)) > 300 &&  Double.parseDouble(temp.get(0))< 600){
+			if(Double.parseDouble(temp.get(0)) > 400 &&  Double.parseDouble(temp.get(0))< 500){
 				ContentValues values = new ContentValues();
 				values.put(OrderBookProviderContract.ORDERBOOK_TIMESTAMP_COLUMN, timeNow);
 				values.put(OrderBookProviderContract.ORDERBOOK_KIND_COLUMN, "ASK");
@@ -126,7 +126,7 @@ public class OrderBookUpdateService extends IntentService{
 		}
 
 		for(ArrayList<String> temp : orderBook.getBids()){
-			if(Double.parseDouble(temp.get(0)) > 300 &&  Double.parseDouble(temp.get(0))< 600){
+			if(Double.parseDouble(temp.get(0)) > 400 &&  Double.parseDouble(temp.get(0))< 500){
 				ContentValues values = new ContentValues();
 				values.put(OrderBookProviderContract.ORDERBOOK_TIMESTAMP_COLUMN, timeNow);
 				values.put(OrderBookProviderContract.ORDERBOOK_KIND_COLUMN, "BID");
