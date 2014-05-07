@@ -27,7 +27,6 @@ public class TickerProvider extends ContentProvider{
     // Constants for building SQLite tables during initialization
     private static final String TEXT_TYPE = "TEXT";
     private static final String PRIMARY_KEY_TYPE = "INTEGER PRIMARY KEY";
-    private static final String INTEGER_TYPE = "INTEGER";
     
     // Defines an SQLite statement that builds the Ticker table
     private static final String CREATE_TICKERURL_TABLE_SQL = "CREATE TABLE" + " " +

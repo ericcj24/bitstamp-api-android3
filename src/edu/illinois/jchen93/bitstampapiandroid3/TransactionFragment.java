@@ -15,8 +15,6 @@ import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 
 import edu.illinois.jchen93.bitstampapiandroid3.R;
-import edu.illinois.jchen93.bitstampapiandroid3.R.id;
-import edu.illinois.jchen93.bitstampapiandroid3.R.layout;
 
 import android.app.LoaderManager;
 import android.app.Activity;

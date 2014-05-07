@@ -29,31 +29,30 @@ public final class R {
         public static final int ic_launcher=0x7f020002;
     }
     public static final class id {
-        public static final int LinearLayout01=0x7f090007;
-        public static final int ask=0x7f090013;
-        public static final int askname=0x7f090012;
-        public static final int bid=0x7f090011;
-        public static final int bidname=0x7f090010;
+        public static final int LinearLayout01=0x7f090006;
+        public static final int ask=0x7f090012;
+        public static final int askname=0x7f090011;
+        public static final int bid=0x7f090010;
+        public static final int bidname=0x7f09000f;
         public static final int chart=0x7f090003;
         public static final int content_frame=0x7f090001;
         public static final int drawer_layout=0x7f090000;
-        public static final int high=0x7f09000b;
-        public static final int highname=0x7f09000a;
-        public static final int last=0x7f09000f;
-        public static final int lastname=0x7f09000e;
+        public static final int high=0x7f09000a;
+        public static final int highname=0x7f090009;
+        public static final int last=0x7f09000e;
+        public static final int lastname=0x7f09000d;
         public static final int left_drawer=0x7f090002;
-        public static final int low=0x7f09000d;
-        public static final int lowname=0x7f09000c;
-        public static final int menu_settings=0x7f090018;
+        public static final int low=0x7f09000c;
+        public static final int lowname=0x7f09000b;
+        public static final int menu_settings=0x7f090017;
         public static final int orderbookchart=0x7f090004;
-        public static final int testtext=0x7f090006;
         public static final int tickerList=0x7f090005;
-        public static final int timestamp=0x7f090009;
-        public static final int timestampname=0x7f090008;
-        public static final int volume=0x7f090017;
-        public static final int volumename=0x7f090016;
-        public static final int vwap=0x7f090015;
-        public static final int vwapname=0x7f090014;
+        public static final int timestamp=0x7f090008;
+        public static final int timestampname=0x7f090007;
+        public static final int volume=0x7f090016;
+        public static final int volumename=0x7f090015;
+        public static final int vwap=0x7f090014;
+        public static final int vwapname=0x7f090013;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -61,8 +60,7 @@ public final class R {
         public static final int fragment_chart=0x7f030002;
         public static final int fragment_orderbook_chart=0x7f030003;
         public static final int fragment_ticker=0x7f030004;
-        public static final int test=0x7f030005;
-        public static final int ticker_items=0x7f030006;
+        public static final int ticker_items=0x7f030005;
     }
     public static final class menu {
         public static final int main=0x7f080000;

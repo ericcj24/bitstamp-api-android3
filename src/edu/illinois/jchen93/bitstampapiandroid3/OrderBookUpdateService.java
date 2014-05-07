@@ -2,22 +2,14 @@ package edu.illinois.jchen93.bitstampapiandroid3;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import android.app.IntentService;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
-import android.os.Parcelable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 // too many data, insertion database toooooo slow, consider trim the data upon receiving it

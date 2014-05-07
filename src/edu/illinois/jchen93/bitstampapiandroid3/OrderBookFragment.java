@@ -9,7 +9,6 @@ import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
-import com.androidplot.xy.XYStepMode;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -151,7 +150,7 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
          * ListView fronting this adapter to re-display
          */ 
 		if(returnCursor!=null){
-			Log.i(TAG, "fancy sth?");
+			//Log.i(TAG, "fancy sth?");
 			plotOrderBook(returnCursor);
         }      
         //mAdapter.changeCursor(returnCursor);

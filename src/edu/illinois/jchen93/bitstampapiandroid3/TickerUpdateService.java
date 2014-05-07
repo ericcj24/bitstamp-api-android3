@@ -10,7 +10,6 @@ import android.app.IntentService;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.util.Log;
 
 
@@ -34,7 +33,7 @@ public class TickerUpdateService extends IntentService{
 		//Log.i(TAG, this.toString());
 		// Gets data from the incoming Intent
 		String dataString = workIntent.getDataString();
-      
+        
 		fetchTicker();
 	}
 	

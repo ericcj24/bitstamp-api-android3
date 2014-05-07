@@ -4,6 +4,8 @@ package edu.illinois.jchen93.bitstampapiandroid3;
  * {"sell": "1.3711", "buy": "1.3823"}
  */
 
+
+// TODO
 public class Eur_Usd{
 	private String sell;
 	private String buy;
