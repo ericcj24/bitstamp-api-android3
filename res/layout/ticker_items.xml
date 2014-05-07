@@ -7,7 +7,7 @@
     android:layout_height="fill_parent"
     android:paddingLeft="10sp" android:paddingRight="10sp"
     android:orientation="vertical" android:paddingTop="2sp"
-    android:weightSum = "1.0" >
+    android:weightSum = "1" >
 
     <LinearLayout 
         android:layout_weight="0.125" 
@@ -17,7 +17,7 @@
         >
 
         <TextView 
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
       	android:layout_width="wrap_content"     	
       	android:gravity="left"
       	android:id="@+id/timestampname" 
@@ -25,7 +25,7 @@
       	android:textSize="22sp" />
         
         <TextView 
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
       	android:layout_width="wrap_content" 
       	android:gravity="right"
       	android:id="@+id/timestamp" 
@@ -40,14 +40,14 @@
         android:orientation = "horizontal">
 
 	    <TextView 
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
       	android:layout_width="wrap_content" 
       	android:id="@+id/highname"
       	android:text="@string/high"
       	android:textSize="22sp" />
 	    
     	<TextView 
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
       	android:layout_width="wrap_content" 
       	android:id="@+id/high"
       	android:text="@string/high" 
@@ -61,14 +61,14 @@
         android:orientation = "horizontal">
     	
 	    <TextView 
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
       	android:layout_width="wrap_content" 
       	android:id="@+id/lowname"
       	android:text="@string/low"
       	android:textSize="22sp" />
 	    
 	    <TextView 
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
       	android:layout_width="wrap_content" 
       	android:id="@+id/low"
       	android:text="@string/low" 
@@ -82,14 +82,14 @@
         android:orientation = "horizontal">
 	
 	    <TextView 
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
       	android:layout_width="wrap_content" 
       	android:id="@+id/lastname"
       	android:text="@string/last"
       	android:textSize="22sp" />
 	    
 	    <TextView 
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
       	android:layout_width="wrap_content" 
       	android:id="@+id/last"
       	android:text="@string/last" 
@@ -103,14 +103,14 @@
         android:orientation = "horizontal">
 	    
 	    <TextView 
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
       	android:layout_width="wrap_content" 
       	android:id="@+id/bidname"
       	android:text="@string/bid"
       	android:textSize="22sp" />
 	    
 	    <TextView 
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
       	android:layout_width="wrap_content" 
       	android:id="@+id/bid"
       	android:text="@string/bid"
@@ -125,14 +125,14 @@
         android:orientation = "horizontal">
 	    
 	    <TextView 
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
       	android:layout_width="wrap_content" 
       	android:id="@+id/askname"
       	android:text="@string/ask" 
       	android:textSize="22sp" />
 	    
 	    <TextView 
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
       	android:layout_width="wrap_content" 
       	android:id="@+id/ask"
       	android:text="@string/ask" 
