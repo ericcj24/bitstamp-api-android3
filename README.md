@@ -1,7 +1,7 @@
-I have been exploiting with different designs to approach same problem, it's all about how to present an App that is more intuitive to use, easier to navigate, and more UI friendly.
-So this is my version (3), which utilizes the DrawerLayout from Android's SDK :)
-According to Android's best practice, using fragment, it's easier and more intuitive to present information to our user, and I say, YES!
-In the next version (4), I am going to try it with an open source SlideMenu from Github
+<p>I have been exploiting with different designs to approach same problem, it's all about how to present an App that is more intuitive to use, easier to navigate, and more UI friendly.</p>
+<p>So this is my version (3), which utilizes the DrawerLayout from Android's SDK :)</p>
+<p>According to Android's best practice, using fragment, it's easier and more intuitive to present information to our user, and I say, YES!</p>
+<p>In the next version (4), I am going to try it with an open source SlideMenu from Github</p>
 
 
 screenshots:
