@@ -98,7 +98,7 @@ public class OrderBookFragment extends Fragment implements LoaderManager.LoaderC
 			Log.i(TAG, "alarm is up, cancelling");
 	        //Intent intent = new Intent(getActivity(), OrderBookUpdateService.class);
 	        //pendingIntent.cancel();
-	        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+	        PendingIntent pendingIntent = PendingIntent.getService(getActivity(), REQUEST_CODE, intent, 0);
 	        alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
 	        alarmMgr.cancel(pendingIntent);
 		}

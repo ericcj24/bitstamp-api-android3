@@ -27,9 +27,6 @@ public class NetworkReceiver extends BroadcastReceiver{
 			int duration = Toast.LENGTH_SHORT;
 			Toast toast = Toast.makeText(context, text, duration);
 			toast.show();
-
-			context.startService(new Intent(context, TransactionUpdateService.class));
-			// needs to choose between two
 		}
 	}
 }
